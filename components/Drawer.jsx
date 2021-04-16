@@ -5,30 +5,21 @@ import {
     DrawerItem
 } from '@react-navigation/drawer'
 import {
-    useTheme,
-    Avatar,
-    Title,
-    Caption,
-    Paragraph,
-    Drawer,
-    Text,
-    TouchableRipple,
-    Switch
+    Drawer
 } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon2 from 'react-native-vector-icons/AntDesign'
 import Icon3 from 'react-native-vector-icons/Fontisto'
+import Mamed from '../pages/MaMed'
+import Doctors from '../pages/Doctors'
 
 export function DrawerContent (props) {
-
-    const paperTheme = useTheme()
     return (
     <View style={{flex:1}}>
         <DrawerContentScrollView {...props}>
             <View style={styles.drawerContent}>
                 <View style={styles.userInfoSection}>
                     <View style={{flexDirection:'row',marginTop: 15}}>
-
                         <Image
                         source={{uri: "https://i.imgur.com/RUjVrWs.png"}}
                         style={{width: 100, height: 100, marginTop: 50, marginLeft: 70, marginRight: 20}}
@@ -56,7 +47,7 @@ export function DrawerContent (props) {
                             />
                         )}
                         label="MaMed"
-                        onPress={() => {props.navigation.navigate('Profile')}}
+                        onPress={() => {props.navigation.navigate('MaMed')}}
                     />
                     <DrawerItem 
                         icon={({color, size}) => (
@@ -67,7 +58,7 @@ export function DrawerContent (props) {
                             />
                         )}
                         label="Doctors"
-                        onPress={() => {props.navigation.navigate('BookmarkScreen')}}
+                        onPress={() => {props.navigation.navigate('Doctors')}}
                     />
                 </Drawer.Section>
             </View>
