@@ -1,43 +1,97 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import { Alert, Image, StyleSheet, Text, View, } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, RadioButton } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
+const axios = require('axios')
+// import RNPickerSelect from 'react-native-picker-select';
+import DropDownPicker from 'react-native-dropdown-picker';
+// import Icon from 'react-native-vector-icons/Feather';
+
 
 export default function SignUp(props) {
     const [signUpName, setSignUpName] = useState('');
     const [signUpEmail, setSignUpEmail] = useState('');
     const [signUpPassword, setSignUpPassword] = useState('');
-    const [alert, setAlert] = useState(false)
+    const [signUpAge, setSignUpAge] = useState('');
+    const [signUpGender, setSignUpGender] = useState('');
+    const [signUpComorbid, setSignUpComorbid] = useState('');
+    const [alertfail, setAlertFail] = useState(false)
+    const [alertsuccess, setAlertSuccess] = useState(false)
 
     const onSubmitSignUp = () => {
         // check email dan passwordnya kalo bener masukin di cache
         console.log({
             signUpName,
             signUpEmail,
-            signUpPassword
+            signUpPassword,
+            signUpAge,
+            signUpGender,
+            signUpComorbid
         });
-        if (true) {
-            //tes alert dulu
-            setAlert(true)
+        if (signUpName && signUpEmail && signUpPassword && signUpAge && signUpGender) {
+            let arrayComorbid = []
+            if(signUpComorbid.indexOf(",")){
+                const toArray = signUpComorbid.split(',')
+                arrayComorbid = toArray.map(e => e.trim())
+            }
+            const signupdata = {
+                "name": signUpName,
+                "email": signUpEmail,
+                "password": signUpPassword,
+                // "role": "patient",
+                "age": Number(signUpAge),
+                "gender": signUpGender,
+                "comorbid": arrayComorbid
+            }
+            // axios disini
+            console.log(signupdata, "<< signupdta");
+            // axios({
+            //     url:"http://localhost:10000/accounts",
+            //     method: "get",
+            //     // data: signupdata,
+            //     // headers: {
+            //     //     "Content-type": "application/json; charset=UTF-8"
+            //     // },
+            // })
+            // .then(response=>{
+            //     console.log(response.data, '<<<');
+            //     // setSignUpName('')
+            //     // setSignUpEmail('')
+            //     // setSignUpPassword('')
+            //     // setSignUpAge('')
+            //     // setSignUpGender('')
+            //     // setSignUpComorbid(null)
+            //     setAlertSuccess(true)
+            // })
+            // .catch(err=>{
+            //     console.log(err, "masuk error axios");
+            // })
+            fetch('http://localhost:10000/accounts')
+            .then(res=>res.json())
+            .then(data=>{
+                console.log(data, "masuk thenfetch");
+            })
+            .catch(err=>{
+                console.log(err);
+            })
         }
         else {
-            props.navigation.navigate('SignUp');
-            setAlert(true)
+            setAlertFail(true)
         }
     };
 
     return (
         <View style={styles.signInContainer}>
-            <Image source={require('../src/images/signup-image.png')} style={{ width: "90%", height: "40%",marginHorizontal:20 }}></Image>
+
             <Text style={styles.helloText}>
                 One Step Closer!
             </Text>
             <Text
                 style={{
                     opacity: 0.4,
-                    marginBottom: 20,
+                    marginBottom: 5,
                     textAlign: 'center',
                     marginHorizontal: 40
                 }}>
@@ -66,7 +120,7 @@ export default function SignUp(props) {
                 <TextInput
                     style={{
                         height: 50,
-                        width: 230,
+                        width: 270,
                         backgroundColor: "white",
                     }}
                     underlineColor="white"
@@ -79,7 +133,143 @@ export default function SignUp(props) {
                     keyboardType="default"
                 />
             </View>
+
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: 'center',
+                    marginHorizontal: 40,
+                    backgroundColor: 'white',
+                    borderBottomWidth: 1,
+                    borderColor: "#0ec7a8",
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20
+                }}>
+                <Ionicons
+                    name="body"
+                    size={20}
+                    color="#0ec7a8"
+                    style={{
+                        paddingHorizontal: 10
+                    }}
+                />
+                <TextInput
+                    style={{
+                        height: 50,
+                        width: 270,
+                        backgroundColor: "white",
+                    }}
+                    underlineColor="white"
+                    label="Age"
+                    returnKeyType="next"
+                    value={signUpAge}
+                    onChangeText={text => setSignUpAge(text)}
+                    keyboardType="number-pad"
+                />
+            </View>
+
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: 'center',
+                    marginHorizontal: 40,
+                    height: 50,
+                    backgroundColor: 'white',
+                    borderBottomWidth: 1,
+                    borderColor: "#0ec7a8",
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    position: "relative",
+                    zIndex: 1,
+                }}>
+                <Ionicons
+                    name="male-female"
+                    size={20}
+                    color="#0ec7a8"
+                    style={{
+                        paddingHorizontal: 10
+                    }}
+                />
+                
+                    {/* GABISAAA<<<<<<< NPM masih kacau */}
+                    {/* <DropDownPicker
+                    items={[
+                        { label: 'Male', value: 'male', },
+                        { label: 'Female', value: 'female' }
+                    ]}
+                    placeholder="Select Gender"
+                    defaultValue={signUpGender}
+                    containerStyle={{ height: 50, width: 270 }}
+                    style={{ backgroundColor: 'white', borderWidth: 0, marginHorizontal: 40, }}
+                    itemStyle={{
+                        justifyContent: 'flex-start',
+                    }}
+                    dropDownStyle={{ backgroundColor: '#fafafa', marginHorizontal: 40, }}
+                    onChangeItem={item => setSignUpGender(item.value)}
+                /> */}
+                <RadioButton
+                    value="male"
+                    status={signUpGender === 'male' ? 'checked' : 'unchecked'}
+                    onPress={() => setSignUpGender('male')}
+                />
+                <Text>Male</Text>
+                <RadioButton
+                    value="female"
+                    status={signUpGender === 'female' ? 'checked' : 'unchecked'}
+                    onPress={() => setSignUpGender('female')}
+                />
+                <Text>Female</Text>
+                <RadioButton
+                    value="other"
+                    status={signUpGender === 'other' ? 'checked' : 'unchecked'}
+                    onPress={() => setSignUpGender('other')}
+                />
+                <Text>Other</Text>
+            </View>
+
             
+
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: 'center',
+                    marginHorizontal: 40,
+                    backgroundColor: 'white',
+                    borderBottomWidth: 1,
+                    borderColor: "#0ec7a8",
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20
+                }}>
+                <Ionicons
+                    name="document"
+                    size={20}
+                    color="#0ec7a8"
+                    style={{
+                        paddingHorizontal: 10
+                    }}
+                />
+                <TextInput
+                    style={{
+                        height: 50,
+                        width: 270,
+                        backgroundColor: "white",
+                    }}
+                    underlineColor="white"
+                    label="Comorbid History (optional)"
+                    returnKeyType="next"
+                    value={signUpComorbid}
+                    // value={signUpComorbid ? signUpComorbid.join(", ") : ""}
+                    onChangeText={text => {
+                        // const toArray = text.split(',')
+                        // const newData = toArray.map(e => e.trim())
+                        setSignUpComorbid(text)
+                    }}
+                    autoCompleteType="name"
+                    textContentType="name"
+                    keyboardType="email-address"
+                />
+            </View>
+
             <View
                 style={{
                     flexDirection: "row",
@@ -102,7 +292,7 @@ export default function SignUp(props) {
                 <TextInput
                     style={{
                         height: 50,
-                        width: 230,
+                        width: 270,
                         backgroundColor: "white",
                     }}
                     underlineColor="white"
@@ -140,10 +330,10 @@ export default function SignUp(props) {
                         backgroundColor: "white",
                         paddingHorizontal: 10,
                         height: 50,
-                        width: 230
+                        width: 270
                     }}
                     underlineColor="white"
-                    label="Password"
+                    label="Set Password"
                     returnKeyType="done"
                     value={signUpPassword}
                     onChangeText={text => setSignUpPassword(text)}
@@ -170,42 +360,58 @@ export default function SignUp(props) {
                 flexDirection: "column",
             }} >
                 <Text
-                    style={{
-                        color: "grey",
-                        textAlign: 'center',
-                        marginVertical: 10
-                    }}
-                >or</Text>
-                <Text
                     onPress={() => props.navigation.navigate('SignIn')}
                     style={{
                         color: "#0ec7a8",
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        marginTop: 10
                     }}
                 >
                     Already have account
                 </Text>
             </View>
             <AwesomeAlert
-                show={alert}
+                show={alertfail}
                 showProgress={false}
-                title="AwesomeAlert"
-                message="I have a message for you!"
+                title="Sign Up Failed"
+                message="Please fill all required data"
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
-                showCancelButton={true}
+                // showCancelButton={true}
                 showConfirmButton={true}
-                cancelText="No, cancel"
-                confirmText="Yes, delete it"
-                confirmButtonColor="#DD6B55"
+                // cancelText="No, cancel"
+                confirmText=" ok "
+                confirmButtonColor="#d44944"
                 onCancelPressed={() => {
-                    setAlert(false)
+                    setAlertFail(false)
                 }}
                 onConfirmPressed={() => {
                     // do something adn close alertnya
-                    setAlert(false)
+                    setAlertFail(false)
                 }}
             />
+            <AwesomeAlert
+                show={alertsuccess}
+                showProgress={false}
+                title="Sign Up Success"
+                message="Please sign in to log in"
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                // showCancelButton={true}
+                showConfirmButton={true}
+                // cancelText="No, cancel"
+                confirmText=" ok "
+                confirmButtonColor="#0ec7a8"
+                onCancelPressed={() => {
+                    setAlertFail(false)
+                }}
+                onConfirmPressed={() => {
+                    // do something adn close alertnya
+                    setAlertFail(false)
+                    props.navigation.navigate('SignIn')
+                }}
+            />
+            <Image source={require('../src/images/signup-image.png')} style={{ width: "60%", height: "30%", marginHorizontal: 60 }}></Image>
         </View>
     );
 };
@@ -219,10 +425,10 @@ const styles = StyleSheet.create({
         paddingTop: 50
     },
     helloText: {
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 2,
         fontFamily: "coolvetica-rg",
-        fontSize: 30,
+        fontSize: 25,
         textAlign: "center"
     },
     label: {
