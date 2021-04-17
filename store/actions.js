@@ -15,3 +15,22 @@ export function asyncFetchDoctor () {
         }
     }
 }
+
+export function asyncFetchMeds () {
+    return async (dispatch) => {
+        try {
+            const {data} = await axios({
+                url: 'http://localhost:3001/orders',
+                method: 'get'
+            })
+            const filtered = data.filter(order => (order.appointment.patient.id === '5'))
+            const filteredMeds = filtered.map(order => {
+                return order.medicines
+            })
+            console.log(filteredMeds, '<<< filtered medicines');
+            dispatch({type: 'medicine/fetch', payload: filteredMeds})
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}

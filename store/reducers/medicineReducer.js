@@ -1,8 +1,8 @@
 const initialState = {
-    medicine: []
+    doctor: []
 }
 
-export default function medicineReducer (state = initialState, action) {
+export default function doctorReducer (state = initialState, action) {
     const {type, payload} = action
     if (type === 'doctor/fetch') {
         return {...state, doctor: payload}

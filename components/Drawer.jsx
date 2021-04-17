@@ -10,7 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon2 from 'react-native-vector-icons/AntDesign'
 import Icon3 from 'react-native-vector-icons/Fontisto'
-import Mamed from '../pages/MaMed'
+import Mamed from '../pages/MedicineBox'
 import Doctors from '../pages/Doctors'
 
 export function DrawerContent (props) {
@@ -46,7 +46,7 @@ export function DrawerContent (props) {
                             size={size}
                             />
                         )}
-                        label="MaMed"
+                        label="Medicine Box"
                         onPress={() => {props.navigation.navigate('MaMed')}}
                     />
                     <DrawerItem 
