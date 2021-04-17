@@ -6,7 +6,6 @@ import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
 const axios = require('axios')
 // import RNPickerSelect from 'react-native-picker-select';
-import DropDownPicker from 'react-native-dropdown-picker';
 // import Icon from 'react-native-vector-icons/Feather';
 
 
@@ -51,9 +50,10 @@ export default function SignUp(props) {
             //     url:"http://localhost:10000/accounts",
             //     method: "get",
             //     // data: signupdata,
-            //     // headers: {
-            //     //     "Content-type": "application/json; charset=UTF-8"
-            //     // },
+            //     // headers:  { 
+                    // //     'Accept': 'application/json',
+                    // //     'Content-Type': 'application/json'
+                    // // }
             // })
             // .then(response=>{
             //     console.log(response.data, '<<<');
@@ -68,7 +68,7 @@ export default function SignUp(props) {
             // .catch(err=>{
             //     console.log(err, "masuk error axios");
             // })
-            fetch('http://localhost:10000/accounts')
+            fetch('http://localhost:3001/accounts')
             .then(res=>res.json())
             .then(data=>{
                 console.log(data, "masuk thenfetch");
@@ -403,11 +403,11 @@ export default function SignUp(props) {
                 confirmText=" ok "
                 confirmButtonColor="#0ec7a8"
                 onCancelPressed={() => {
-                    setAlertFail(false)
+                    setAlertSuccess(false)
                 }}
                 onConfirmPressed={() => {
                     // do something adn close alertnya
-                    setAlertFail(false)
+                    setAlertSuccess(false)
                     props.navigation.navigate('SignIn')
                 }}
             />

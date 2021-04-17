@@ -4,25 +4,32 @@ import { Alert, Image, StyleSheet, Text, View} from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
+const axios = require('axios')
 
 export default function SignIn(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [alert, setAlert] = useState(false)
+    const [alertFailLogin, setAlertFailLogin] = useState(false)
 
     const onSubmitLogin = () => {
         // check email dan passwordnya kalo bener masukin di cache
-
-        if (true) {
-            //tes alert dulu
-            // setAlert(true)
-            console.log('<<< masuk');
-            props.navigation.navigate('Home');
-        }
-        else {
-            props.navigation.navigate('SignUp');
-            setAlert(true)
-        }
+        axios({
+            url: "https://localhost:3001/accounts",
+            method: "get",
+        })
+        .then(response=>{
+            const userData = response.data.map(data=>data.email === email)
+            if (userData.password === password) {
+                console.log(response.data,'<<< masuk');
+                props.navigation.replace('Home');
+            }
+            else {
+                setAlertFailLogin(true)
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+        })
     };
 
     return (
@@ -149,23 +156,23 @@ export default function SignIn(props) {
                 </Text>
             </View>
             <AwesomeAlert
-                show={alert}
+                show={alertFailLogin}
                 showProgress={false}
-                title="AwesomeAlert"
-                message="I have a message for you!"
+                title="Login Failed"
+                message="Wrong Email or Password"
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
-                showCancelButton={true}
+                // showCancelButton={true}
                 showConfirmButton={true}
-                cancelText="No, cancel"
-                confirmText="Yes, delete it"
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    setAlert(false)
-                }}
+                // cancelText="No, cancel"
+                confirmText=" ok "
+                confirmButtonColor="#0ec7a8"
+                // onCancelPressed={() => {
+                //     setAlertFailLogin(false)
+                // }}
                 onConfirmPressed={() => {
                     // do something adn close alertnya
-                    setAlert(false)
+                    setAlertFailLogin(false)
                 }}
             />
         </View>
