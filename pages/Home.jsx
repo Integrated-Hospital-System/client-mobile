@@ -145,11 +145,15 @@ export default function Homepage() {
           icon="plus-circle"
           // onPress={onSubmitLogin}
           style={{
-            marginHorizontal: 40,
+            marginHorizontal: 50,
+            height: 70,
             marginTop: 10,
-            color: "white"
+            color: "white",
+            borderRadius: 50,
+            justifyContent: 'center'
           }}
-          color='#0ec7a8'
+          color='#1d7a57'
+          
         >
           New Appointment
           </Button>
@@ -167,12 +171,15 @@ export default function Homepage() {
           icon="check-circle"
           // onPress={onSubmitLogin}
           style={{
-            marginHorizontal: 40,
+            marginHorizontal: 50,
             marginTop: 10,
+            height: 70,
             marginBottom: 60,
-            color: "white"
+            color: "white",
+            borderRadius: 50,
+            justifyContent: 'center'
           }}
-          color='#0ec7a8'
+          color='#1d7a57'
         >
           History
           </Button>
