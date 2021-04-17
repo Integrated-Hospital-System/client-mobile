@@ -30,9 +30,9 @@ export default function SignIn(props) {
             const userData = response.data.map(data=>data.email === email)
             if (userData.password === password) {
                 console.log(response.data,'<<< masuk');
-                const storeData = async (userData) => {
+                async (userData) => {
                     try {
-                      await AsyncStorage.setItem('access_token', userData)
+                      await AsyncStorage.setItem('user-data', userData)
                       props.navigation.replace('Home');
                     } catch (e) {
                         console.log(e);
