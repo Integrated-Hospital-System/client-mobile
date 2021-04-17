@@ -1,15 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { Alert, Image, StyleSheet, Text, View} from 'react-native';
+import { Image, StyleSheet, Text, View} from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const axios = require('axios')
 
 export default function SignIn(props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [alertFailLogin, setAlertFailLogin] = useState(false)
+
+
+    // async function tesAsync(){
+    //     console.log(await AsyncStorage.setItem('tes_key', "tes valueeeeeee"), '<< set async' )
+    //     const data = console.log(await AsyncStorage.getItem('tes_key'), "<<< tes async")
+    
+    // }
+    // tesAsync()
 
     const onSubmitLogin = () => {
         // check email dan passwordnya kalo bener masukin di cache
@@ -21,7 +30,15 @@ export default function SignIn(props) {
             const userData = response.data.map(data=>data.email === email)
             if (userData.password === password) {
                 console.log(response.data,'<<< masuk');
-                props.navigation.replace('Home');
+                const storeData = async (userData) => {
+                    try {
+                      await AsyncStorage.setItem('access_token', userData)
+                      props.navigation.replace('Home');
+                    } catch (e) {
+                        console.log(e);
+                      // saving error
+                    }
+                  }
             }
             else {
                 setAlertFailLogin(true)
