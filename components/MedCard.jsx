@@ -30,11 +30,15 @@ export default function DocCard(props) {
     name="edit-3"
     size={30}
     style={{marginRight: 20}}
-    onPress={() => {navigation.navigate("Set Alarm", {meds: {name, alarm, totalMed, timesPerDay, doses}})}}
+    onPress={() => {navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})}}
     // onPress={() => {navigation.navigate('Home')}}
     // onPress={() => {setMedAmmout(medAmmount - 1)}}
     />
   )
+
+  useEffect(() => {
+    console.log(alarmList, '<<< alarm list di kartu');
+  }, [alarmList, alarm])
 
   // functions for push notification starts here
 
@@ -116,12 +120,15 @@ export default function DocCard(props) {
   // functions for push notification ends here
 
   function setAlarmTime () {
-    if (alarm.length === 0) return "You haven't set the alarm"
+    let validator = false
+    // if (alarm.length === 0) return "You haven't set the alarm"
     let temp = ''
     alarm.forEach((time, index) => {
+      time !== '--:--' ? validator = true : console.log('next');
       index === alarm.length - 1 ? temp += `${time}` : temp += `${time} | `
     });
-    return temp
+    if (validator) return temp
+    else return "No alarm set"
   }
 
   return (
