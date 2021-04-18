@@ -4,7 +4,8 @@ import { Alert, Image, StyleSheet, Text, View, } from 'react-native';
 import { Button, TextInput, RadioButton } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
-const axios = require('axios')
+import { signUp } from '../store/actions'
+import { useDispatch } from 'react-redux';
 // import RNPickerSelect from 'react-native-picker-select';
 // import Icon from 'react-native-vector-icons/Feather';
 
@@ -18,6 +19,7 @@ export default function SignUp(props) {
     const [signUpComorbid, setSignUpComorbid] = useState('');
     const [alertfail, setAlertFail] = useState(false)
     const [alertsuccess, setAlertSuccess] = useState(false)
+    const dispatch = useDispatch()
 
     const onSubmitSignUp = () => {
         // check email dan passwordnya kalo bener masukin di cache
@@ -30,11 +32,11 @@ export default function SignUp(props) {
             signUpComorbid
         });
         if (signUpName && signUpEmail && signUpPassword && signUpAge && signUpGender) {
-            let arrayComorbid = []
-            if(signUpComorbid.indexOf(",")){
-                const toArray = signUpComorbid.split(',')
-                arrayComorbid = toArray.map(e => e.trim())
-            }
+            // let arrayComorbid = []
+            // if(signUpComorbid.indexOf(",")){
+            //     const toArray = signUpComorbid.split(',')
+            //     arrayComorbid = toArray.map(e => e.trim())
+            // }
             const signupdata = {
                 "name": signUpName,
                 "email": signUpEmail,
@@ -42,40 +44,13 @@ export default function SignUp(props) {
                 // "role": "patient",
                 "age": Number(signUpAge),
                 "gender": signUpGender,
-                "comorbid": arrayComorbid
+                // "comorbid": arrayComorbid
+                "comorbid": [...signUpComorbid?.split(',')]
             }
             // axios disini
             console.log(signupdata, "<< signupdta");
-            // axios({
-            //     url:"http://localhost:10000/accounts",
-            //     method: "get",
-            //     // data: signupdata,
-            //     // headers:  { 
-                    // //     'Accept': 'application/json',
-                    // //     'Content-Type': 'application/json'
-                    // // }
-            // })
-            // .then(response=>{
-            //     console.log(response.data, '<<<');
-            //     // setSignUpName('')
-            //     // setSignUpEmail('')
-            //     // setSignUpPassword('')
-            //     // setSignUpAge('')
-            //     // setSignUpGender('')
-            //     // setSignUpComorbid(null)
-            //     setAlertSuccess(true)
-            // })
-            // .catch(err=>{
-            //     console.log(err, "masuk error axios");
-            // })
-            fetch('http://localhost:3001/accounts')
-            .then(res=>res.json())
-            .then(data=>{
-                console.log(data, "masuk thenfetch");
-            })
-            .catch(err=>{
-                console.log(err);
-            })
+            dispatch(signUp(signupdata))
+            
         }
         else {
             setAlertFail(true)

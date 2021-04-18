@@ -12,8 +12,10 @@ export default function Homepage() {
   const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const doctors = useSelector(state => state.doctorReducer.doctors)
-  dispatch(asyncFetchMeds())
-  dispatch(asyncFetchDoctors())
+  useEffect(() => {
+    dispatch(asyncFetchMeds())
+    dispatch(asyncFetchDoctors())
+  }, [])
   console.log(medicines, '<<< dari server')
   const userData = null
   return (
