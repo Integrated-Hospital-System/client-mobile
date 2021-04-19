@@ -16,6 +16,7 @@ export default function Homepage({navigation}) {
   useEffect(() => {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())
+    console.log(doctors, '<<< doctors');
   }, [])
   const userData = null
 

@@ -25,20 +25,80 @@ export const signIn = (signInData) => async (dispatch) => {
 }
 
 export const asyncFetchDoctors = () => async (dispatch) => {
-    const userData = await AsyncStorage.getItem('user-data')
-    const parsed = JSON.parse(userData)
-    console.log('masuk asyncFetchDoctors');
-    try {
-      const {data} = await axios.get('/accounts', {
-          headers : {
-              access_token : parsed.access_token
+    const dummyDoctors = [
+      {
+        "id": "2",
+        "name": "Hasan",
+        "username": "hasan",
+        "email": "hasan@email.com",
+        "password": "hasan",
+        "role": "doctor",
+        "speciality": ["tht", "organ dalam"],
+        "practice": [
+          {
+            "day": "monday",
+            "start": "9:15",
+            "end": "15:45"
+          },
+          {
+            "day": "tuesday",
+            "start": "9:15",
+            "end": "15:45"
+          },
+          {
+            "day": "wednesday",
+            "start": "9:15",
+            "end": "15:45"
+          },
+          {
+            "day": "thursday",
+            "start": "9:15",
+            "end": "15:45"
+          },
+          {
+            "day": "friday",
+            "start": "11:00",
+            "end": "15:45"
           }
-      })
-      const filtered = data.filter(account => account.role === 'doctor')
-      dispatch({type: 'doctor/fetch', payload: filtered})
-    } catch (error) {
-        console.log(error, '<<< error try catch')
-    }
+        ]
+      },
+      {
+        "id": "3",
+        "name": "Ratna",
+        "username": "ratna",
+        "email": "ratna@email.com",
+        "password": "ratna",
+        "role": "doctor",
+        "speciality": ["mata", "organ dalam"],
+        "practice": [
+          {
+            "day": "monday",
+            "start": "8:15",
+            "end": "17:45"
+          },
+          {
+            "day": "thursday",
+            "start": "8:17",
+            "end": "17:45"
+          }
+        ]
+      }
+    ]
+    dispatch({type: 'doctor/fetch', payload: dummyDoctors})
+    // const userData = await AsyncStorage.getItem('user-data')
+    // const parsed = JSON.parse(userData)
+    // console.log('masuk asyncFetchDoctors');
+    // try {
+    //   const {data} = await axios.get('/accounts', {
+    //       headers : {
+    //           access_token : parsed.access_token
+    //       }
+    //   })
+    //   const filtered = data.filter(account => account.role === 'doctor')
+      // dispatch({type: 'doctor/fetch', payload: filtered})
+    // } catch (error) {
+        // console.log(error, '<<< error try catch')
+    // }
 }
 
 export const updateAlarm =  (name, params, original) => (dispatch) => {

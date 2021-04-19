@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { StyleSheet, Text, ScrollView, View, ImageBackground, Image, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput, Button } from 'react-native-paper'
@@ -7,14 +7,31 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import SpecialityCard from "../components/SpecialityCard"
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IconAnt from 'react-native-vector-icons/AntDesign'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AppointmentForm(props) {
-    console.log(props, "<<< props dummy doctor");
     const { practice, speciality, name, id } = props.route.params
     const [appointmentDate, setAppointmentDate] = useState('')
-
-
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [practiceDays, setPracticeDays] = useState('')
+    const [comorbid, setComorbid] = useState('')
+    const [diseases, setDiseases] = useState('')
+
+    useEffect(async () => {
+        let tempArr = []
+        practice.forEach(details => tempArr.push(details.day))
+        setPracticeDays(tempArr)
+        const cache = JSON.parse(await AsyncStorage.getItem('user-data'))
+        console.log(cache.account.comorbid, '<<<< cache comorbid')
+        let temp = ''
+        const contoh = cache.account.comorbid.join(',')
+        setComorbid(contoh)
+    }, [])
+
+    useEffect(() => {
+        // const day = new Date(appointmentDate).getDate()
+        // console.log(day, '<<<< appointment date choosen');
+    }, [appointmentDate])
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -24,9 +41,48 @@ export default function AppointmentForm(props) {
         setDatePickerVisibility(false);
     };
 
-    const handleConfirm = (date) => {
-        setAppointmentDate(date);
-        hideDatePicker();
+    const handleConfirm = (value) => {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const date = new Date(value).toLocaleString('en-US', {timeZone})
+        const day = new Date(date).getDay()
+        let theDay = ''
+        switch (day) {
+            case 0:
+                theDay = 'Sunday'
+                break;
+            case 1:
+                theDay = 'Monday'
+                break;
+            case 2:
+                theDay = 'Tuesday'
+                break;
+            case 3:
+                theDay = 'Wednesday'
+                break;
+            case 4:
+                theDay = 'Thursday'
+                break;
+            case 5:
+                theDay = 'Friday'
+                break;
+            case 6:
+                theDay = 'Saturday'
+                break;
+        }
+        let validator = false
+        practiceDays.forEach(day => {
+            if (day.toLowerCase() === theDay.toLowerCase()) validator = true
+        })
+        if (validator) {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const month = monthNames[value.getMonth()]
+            const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
+            setAppointmentDate(newFormat)
+            hideDatePicker();
+        } else {
+            alert('doctor is not available on that day')
+        }
+
     };
 
 
@@ -100,7 +156,7 @@ export default function AppointmentForm(props) {
                     underlineColor="white"
                     label="Comorbid"
                     returnKeyType="next"
-                    // value={email}
+                    value={comorbid}
                     // onChangeText={emailInput => setEmail(emailInput)}
                     autoCompleteType="email"
                     textContentType="emailAddress"
@@ -135,6 +191,11 @@ export default function AppointmentForm(props) {
                         borderTopRightRadius: 0,
                         borderBottomLeftRadius: 0,
                         borderBottomRightRadius: 0
+                    }}
+                    onChangeText={(value) => {
+                        console.log(value, '<<<<<< onchangetext diseases');
+                        setDiseases(value)
+                        console.log(diseases, '<<< diseases dari on change text');
                     }}
                     underlineColor="white"
                     label="Disease"
@@ -245,6 +306,9 @@ export default function AppointmentForm(props) {
                     marginBottom: 20
                 }}
                 color='#0ec7a8'
+                onPress={() => {
+                    console.log(diseases, comorbid, name, id, appointmentDate, '<<<<<<');
+                }}
             >
                 Make Appointment
           </Button>

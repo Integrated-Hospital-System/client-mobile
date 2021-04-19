@@ -5,7 +5,6 @@ const initialState = {
 export default function doctorReducer (state = initialState, action) {
     const {type, payload} = action
     if (type === 'medicine/fetch') {
-        console.log(payload, '<<<<< value to reassign in reducer')
         return {...state, medicines: payload}
     } else if (type === 'alarm/update') {
         return {...state, medicines: payload}

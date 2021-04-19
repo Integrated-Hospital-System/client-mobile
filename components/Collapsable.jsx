@@ -20,14 +20,14 @@ export default function AccordionView(props) {
   const navigation  = useNavigation()
   const randomImageNumber = (Math.floor(Math.random() * 2)).toString()
   const [collapsed, setCollaped] = useState(true)
-  const { dummyDoctor } = props
+  const { doctor } = props
   const toggleExpanded = () => {
     setCollaped(!collapsed);
   };
-  const arrayOfDays = dummyDoctor.practice.map(eachDay => {
+  const arrayOfDays = doctor.practice.map(eachDay => {
     return eachDay.day
   })
-  const arrayOfTime = dummyDoctor.practice.map(eachDay => {
+  const arrayOfTime = doctor.practice.map(eachDay => {
     return [eachDay.start, eachDay.end]
   })
   const [tableHead, setTableHead] = useState(["days", "start", "end"])
@@ -55,7 +55,7 @@ export default function AccordionView(props) {
           <View>
             <Avatar.Image size={150} source={require(`../src/images/doctor0.jpeg`)} />
           </View>
-          <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>Dr. {dummyDoctor.name}</Text>
+          <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>Dr. {doctor.name}</Text>
 
           <View>
             <Text style={{
@@ -65,7 +65,7 @@ export default function AccordionView(props) {
               Speciality:
               </Text>
             {
-              dummyDoctor.speciality.map(eachSpeciality => {
+              doctor.speciality.map(eachSpeciality => {
                 return <SpecialityCard eachSpeciality={eachSpeciality} key={eachSpeciality}></SpecialityCard>
               })
             }
@@ -74,7 +74,7 @@ export default function AccordionView(props) {
           <Button
             mode="contained"
             icon="check-circle"
-            onPress={()=> navigation.navigate('AppointmentForm', dummyDoctor)}
+            onPress={()=> navigation.navigate('AppointmentForm', doctor)}
             style={{
               marginHorizontal: 20,
               marginTop: 20,
@@ -83,7 +83,7 @@ export default function AccordionView(props) {
             width={300}
             color='#0ec7a8'
           >
-            Choose Dr. {dummyDoctor.name}
+            Choose Dr. {doctor.name}
           </Button>
 
           <View style={{
@@ -95,7 +95,7 @@ export default function AccordionView(props) {
             backgroundColor: '#f0fffb',
           }}>
             <View style={styles.toggleContainer}>
-              <Text style={styles.toggleTitle}>Dr. {dummyDoctor.name}'s Schedule</Text>
+              <Text style={styles.toggleTitle}>Dr. {doctor.name}'s Schedule</Text>
               <Switch
                 value={!collapsed}
                 onValueChange={toggleExpanded}
