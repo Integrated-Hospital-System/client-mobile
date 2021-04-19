@@ -93,7 +93,7 @@ export default function Doctors() {
         style={{
           width: "100%",
           height: '100%',
-          backgroundColor: '#daf0eb', 
+          backgroundColor: '#79d9c3', 
           shadowOffset: {
             width: 100,
             height: -100
@@ -109,7 +109,7 @@ export default function Doctors() {
             <Text style={styles.titleNote}>Consistency is the key</Text>
           </View>
           <View style={{ marginTop: 200, }}>
-            <Image source={require('../src/images/medicines-image.png')} style={{ width: 150, resizeMode: 'contain', height: 100, }}></Image>
+            {/* <Image source={require('../src/images/medicines-image.png')} style={{ width: 150, resizeMode: 'contain', height: 100, }}></Image> */}
           </View>
         </View>
         <ScrollView
@@ -117,7 +117,7 @@ export default function Doctors() {
           showsVerticalScrollIndicator={false}
           style={{
             // width: 100,
-            maxHeight: 400,
+            // maxHeight: 400,
             // backgroundColor: 'red',
             marginHorizontal: 30,
           }}
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   titleNote: {
     fontFamily: 'coolvetica-rg',
     fontSize: 15,
-    color: "#9c9c9c",
+    color: "#4a4a4a",
     marginBottom: 10
   }
 })

@@ -42,6 +42,20 @@ export default function AccordionView(props) {
 
   return (
     <View style={styles.container}>
+      <View style={{
+                width: 300,
+                height: 320,
+                position: "absolute",
+                top: 0,
+                borderTopRightRadius: 10,
+                borderTopLeftRadius: 10,
+                borderColor:'#68e8cb',
+                backgroundColor: 'white',
+                zIndex: 0,
+                opacity: 0.5
+                // marginHorizontal: 40
+            }}>
+            </View>
       <ScrollView
         // contentContainerStyle={{ paddingTop: 30,  }}
         vertical
@@ -57,7 +71,7 @@ export default function AccordionView(props) {
           style={{
             flexDirection: "column",
             width: 300,
-            marginTop: 10,
+            marginTop: 30,
             marginHorizontal: 10,
             // backgroundColor: 'grey',
             justifyContent: 'center',
@@ -95,7 +109,7 @@ export default function AccordionView(props) {
               color: "white"
             }}
             width={300}
-            color='#0ec7a8'
+            color='white'
           >
             Choose Dr. {dummyDoctor.name}
           </Button>
@@ -103,15 +117,15 @@ export default function AccordionView(props) {
 
 
           <View style={{
-            marginTop: 10,
+            marginTop: 0,
             backgroundColor: "white",
-            borderRadius: 15,
-            borderWidth: 2,
-            borderColor: "#0ec7a8",
-            backgroundColor: '#f0fffb',
+            borderBottomRightRadius: 10,
+            borderBottomLeftRadius: 10,
+            // borderWidth: 2,
+            backgroundColor: '#c1e8da',
           }}>
             <View style={styles.toggleContainer}>
-              <Text style={styles.toggleTitle}>Dr. {dummyDoctor.name}'s Schedule</Text>
+              <Text style={styles.toggleTitle}>See Dr. {dummyDoctor.name}'s Schedule</Text>
               <Switch
                 value={!collapsed}
                 onValueChange={toggleExpanded}
@@ -197,7 +211,7 @@ const styles = StyleSheet.create({
     // borderRadius: 30
   },
   toggleTitle: {
-    fontSize: 16,
+    fontSize: 12,
     marginHorizontal: 10,
   },
   head: { height: 40, backgroundColor: '#f1f8ff' },

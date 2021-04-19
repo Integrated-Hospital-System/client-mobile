@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     
   },
   avatar: {
-    backgroundColor: '#179167',
+    backgroundColor: '#2e8760',
 
   }
 })

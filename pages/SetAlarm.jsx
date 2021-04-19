@@ -56,20 +56,7 @@ export default function SetAlarm({ route, navigation }) {
     navigation.navigate('MaMed')
   }
 
-
-
-  //  const { name, alarm, totalMed, timesPerDay, doses } = {
-  //   alarm: [
-  //     "--:--",
-  //     "--:--",
-  //     "--:--",
-  //   ],
-  //   doses: 1,
-  //   name: "Antibiotik",
-  //   timesPerDay: 3,
-  //   totalMed: 12,
-  // }
-
+  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< DUMMY<<<<<<<<<<<<<<
   const name = "antibiotik"
   const alarm = [
     "--:--",
@@ -82,7 +69,7 @@ export default function SetAlarm({ route, navigation }) {
 
   const [tempAlarm, setTempAlarm] = useState(alarm);
 
-
+  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< DUMMY<<<<<<<<<<<<<<
 
 
   if (!fontsLoaded) {
