@@ -1,10 +1,12 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Avatar, Card } from 'react-native-paper';
 import { useNavigation, Platform } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
+import { useSelector, useDispatch } from 'react-redux'
+import { deleteMed } from '../store/actions'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -15,6 +17,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function DocCard(props) {
+  const medicines = useSelector(state => state.medicineReducer.medicines)
+  const dispatch = useDispatch()
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -26,19 +30,27 @@ export default function DocCard(props) {
   const alarmList = setAlarmTime()
   const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="#3075b5" style={styles.avatar}/>
   const RightContent = props => (
-    <Icon
-    name="edit-3"
-    size={30}
-    style={{marginRight: 20}}
-    onPress={() => {navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})}}
-    // onPress={() => {navigation.navigate('Home')}}
-    // onPress={() => {setMedAmmout(medAmmount - 1)}}
-    />
+    <View>
+      <Icon
+      name="edit-3"
+      size={20}
+      style={{marginRight: 20}}
+      onPress={() => {navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})}}
+      />
+      <Icon
+      name="trash-2"
+      size={20}
+      style={{marginRight: 20}}
+      onPress={() => {deleteMed(name)}}
+      />
+    </View>
   )
 
-  useEffect(() => {
-    console.log(alarmList, '<<< alarm list di kartu');
-  }, [alarmList, alarm])
+  function deleteMed (name) {
+    const deleted = medicines.filter(med => med.medicine.name !== name)
+    dispatch(deleteMed(deleted))
+    console.log(medicines, '<<< medicines');
+  }
 
   // functions for push notification starts here
 
@@ -60,12 +72,12 @@ export default function DocCard(props) {
   }, []);
 
   async function schedulePushNotification(param) {
-    alert('ini push notif')
+    alert(`Boop Boop... 💊\nIt's time to take your ${name} x ${doses}`)
     navigation.navigate('Home')
     await Notifications.scheduleNotificationAsync({
       content: ({
-        title: "You've got mail! 📬",
-        body: `minutes ${param}`,
+        title: "Boop Boop... 💊",
+        body: `It's time to take your ${name} x ${doses}`,
         data: { data: 'goes here' },
       }),
       trigger: { seconds: 1 },
@@ -121,10 +133,9 @@ export default function DocCard(props) {
 
   function setAlarmTime () {
     let validator = false
-    // if (alarm.length === 0) return "You haven't set the alarm"
     let temp = ''
     alarm.forEach((time, index) => {
-      time !== '--:--' ? validator = true : console.log('next');
+      time !== '--:--' ? validator = true : Math.random()
       index === alarm.length - 1 ? temp += `${time}` : temp += `${time} | `
     });
     if (validator) return temp

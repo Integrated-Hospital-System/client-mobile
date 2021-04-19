@@ -16,7 +16,6 @@ export default function Homepage() {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())
   }, [])
-  console.log(medicines, '<<< dari server')
   const userData = null
   return (
     <ScrollView

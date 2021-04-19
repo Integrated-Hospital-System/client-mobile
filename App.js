@@ -46,7 +46,7 @@ export default function App() {
         <NavigationContainer>
           <Drawer.Navigator initialRouteName="SignIn" drawerContent={(props) => <DrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={Home} />
-            <Drawer.Screen name="Mamed" component={MaMed} />
+            <Drawer.Screen name="MaMed" component={MaMed} />
             <Drawer.Screen name="Doctors" component={Doctors} />
             <Drawer.Screen name="SignIn" component={SignIn} />
             <Drawer.Screen name="SignUp" component={SignUp} />

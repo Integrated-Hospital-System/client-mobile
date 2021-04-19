@@ -7,42 +7,55 @@ import {
   useFonts,
   PassionOne_400Regular
 } from '@expo-google-fonts/dev'
-import MedCard from '../components/MedCard'
-const axios = require('axios')
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
 export default function SetAlarm({route, navigation}) {
   const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
-  const medicineCache = useSelector(state => state.medicineReducer.medicines)
+  const [time, setTime] = useState('')
+  const [indexToEdit, setIndexToEdit] = useState('')
   const { name, alarm, totalMed, timesPerDay, doses } = route.params
   const [tempAlarm, setTempAlarm] = useState(JSON.parse(JSON.stringify(alarm, null, 2)));
-  const [contoh, setContoh] = useState('')
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
 
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (value) => {
+    const date = new Date(value)
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const alarmTime = date.toLocaleString('en-US', {timeZone})
+    const hour = new Date(alarmTime).getHours()
+    const minute= new Date(alarmTime).getMinutes()
+    let minutes;
+    let hours;
+    minute < 10 ? minutes = '0' + minute : minutes = minute
+    hour < 10 ? hours = '0' + hour : hours = hour
+    setTime(`${hours}:${minutes}`)
+    alarm[indexToEdit] = `${hours}:${minutes}`
+    hideDatePicker();
+  };
+
+  function updateSchedule () {
+    dispatch(updateAlarm(name, tempAlarm, medicines))
+    navigation.navigate('MaMed')
+  }
+
   if (!fontsLoaded) {
     console.log(fontsLoaded)
     return <Text>Loading...</Text>
   }
-
-  function onChange (value) {
-    setContoh(value)
-  }
-
-  console.log(tempAlarm, '<<< tempAlarm');
-
-  function updateSchedule () {
-    console.log(tempAlarm, '<<< dari setAlarm');
-    dispatch(updateAlarm(name, tempAlarm, medicines))
-    dispatch(asyncFetchMeds())
-    console.log('ASASDASDASDASDASDASDASDASDASDQKWDKJQWNDJQNWDJKQNWD ++++++++++++++++++++++++++');
-    console.log(medicineCache, '<<<< after update');
-    navigation.navigate('MaMed')
-  }
-
 
   return (
     <>
@@ -61,36 +74,42 @@ export default function SetAlarm({route, navigation}) {
           style={{backgroundColor: 'white'}}
           disabled={true}
           />
-          <TextInput
-          // label={`Alarm ${index + 1}`}
-          keyboardType={'numeric'}
-          // placeholder={tempAlarm[index] === '--:--' ? '' : tempAlarm[index]}
-          value={contoh}
-          style={{backgroundColor: 'white'}}
-          maxLength={5}
-          onChangeText={onChange}
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="time"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
           />
-          {alarm.map((alarm, index) => {
+          {alarm.map((oneAlarm, index) => {
             return (
               <TextInput
               key={Math.random()}
               label={`Alarm ${index + 1}`}
               keyboardType={'numeric'}
-              // placeholder={tempAlarm[index] === '--:--' ? '' : tempAlarm[index]}
-              value={tempAlarm[index] === '--:--' ? '' : tempAlarm[index]}
+              value={oneAlarm === '--:--' ? '' : oneAlarm}
               style={{backgroundColor: 'white'}}
-              maxLength={5}
-              onChangeText={(value) => {
-                const digit = value.length
-                if (value.length === 2) value = value + ':'
-                else if (value === '') value = '--:--'
-                const newArr = JSON.parse(JSON.stringify(tempAlarm))
-                console.log(tempAlarm, '<<< newArr sebelum reassign')
-                newArr[index] = value
-                setTempAlarm(newArr)
-                console.log(tempAlarm, '<<< tempAlaram')
+              // onTouchStart={showDatePicker(index)}
+              onTouchEnd={() => {
+                setIndexToEdit(index)
+                showDatePicker()
               }}
               />
+              // <TextInput
+              // key={Math.random()}
+              // label={`Alarm ${index + 1}`}
+              // keyboardType={'numeric'}
+              // value={oneAlarm === '--:--' ? '' : oneAlarm}
+              // style={{backgroundColor: 'white'}}
+              // maxLength={5}
+              // onChangeText={(value) => {
+              //   const digit = value.length
+              //   if (digit === 2) value = value + ':'
+              //   else if (value === '') value = '--:--'
+              //   alarm[index] = value
+              //   const temporary = JSON.parse(JSON.stringify(alarm))
+              //   setTempAlarm(temporary)
+              // }}
+              // />
             )
           })}
           </View>

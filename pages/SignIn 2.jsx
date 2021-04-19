@@ -5,12 +5,9 @@ import { Button, TextInput } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signIn } from '../store/actions'
-import { useDispatch } from 'react-redux';
 const axios = require('axios')
 
 export default function SignIn(props) {
-    const dispatch = useDispatch()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [alertFailLogin, setAlertFailLogin] = useState(false)
@@ -23,53 +20,33 @@ export default function SignIn(props) {
     // }
     // tesAsync()
 
-    const onSubmitLogin = async () => {
+    const onSubmitLogin = () => {
         // check email dan passwordnya kalo bener masukin di cache
-        const response = await dispatch(signIn({email, password}))
-        const userData = response.data
-        // console.log(userData.account, '<<< userData');
-        if (userData.account.email === email) {
-            console.log('masuk sini');
-            console.log(userData, '<<< user Data');
-            try {
-                await AsyncStorage.setItem('user-data', JSON.stringify(userData, null, 2))
-                props.navigation.navigate('Home');
-            } catch (error) {
-                console.log(error);
+        axios({
+            url: "https://localhost:3001/accounts",
+            method: "get",
+        })
+        .then(response=>{
+            const userData = response.data.map(data=>data.email === email)
+            if (userData.password === password) {
+                console.log(response.data,'<<< masuk');
+                async (userData) => {
+                    try {
+                      await AsyncStorage.setItem('user-data', userData)
+                      props.navigation.replace('Home');
+                    } catch (e) {
+                        console.log(e);
+                      // saving error
+                    }
+                  }
             }
-            // async (userData) => {
-            //     console.log("ada");
-            //     try {
-            //     } catch (e) {
-            //         console.log(e);
-            //     }
-            // }
-        }
-        // axios({
-        //     url: "https://localhost:3001/accounts",
-        //     method: "get",
-        // })
-        // .then(response=>{
-        //     const userData = response.data.map(data=>data.email === email)
-        //     if (userData.password === password) {
-        //         console.log(response.data,'<<< masuk');
-        //         async (userData) => {
-        //             try {
-        //               await AsyncStorage.setItem('user-data', userData)
-        //               props.navigation.replace('Home');
-        //             } catch (e) {
-        //                 console.log(e);
-        //               // saving error
-        //             }
-        //           }
-        //     }
-        //     else {
-        //         setAlertFailLogin(true)
-        //     }
-        // })
-        // .catch(err=>{
-        //     console.log(err);
-        // })
+            else {
+                setAlertFailLogin(true)
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+        })
     };
 
     return (

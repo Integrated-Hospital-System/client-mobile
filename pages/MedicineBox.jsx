@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
-import { useSelector } from 'react-redux'
-import { Avatar, Button, Card } from 'react-native-paper';
+import { useSelector, useDispatch } from 'react-redux'
+import { asyncFetchMeds } from '../store/actions'
 import {
   useFonts,
   PassionOne_400Regular
@@ -11,6 +11,7 @@ const axios = require('axios')
 
 
 export default function Doctors() {
+  const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({
@@ -29,16 +30,14 @@ export default function Doctors() {
           style={{fontFamily: 'PassionOne_400Regular', fontSize: 40}}
           >Medicine Box</Text>
           {medicines.map((med, index) => {
-            return (
-              <MedCard
+            return <MedCard
               key={Math.random()}
               name={med.medicine.name}
               totalMed ={med.totalMedicine}
-              alarm={med.alarm}
+              alarm={med.alarms}
               timesPerDay={med.timesPerDay}
               doses={med.doses}
               />              
-            )
           })}
         </View>
         <View/>

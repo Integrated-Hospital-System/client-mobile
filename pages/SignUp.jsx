@@ -32,11 +32,6 @@ export default function SignUp(props) {
             signUpComorbid
         });
         if (signUpName && signUpEmail && signUpPassword && signUpAge && signUpGender) {
-            // let arrayComorbid = []
-            // if(signUpComorbid.indexOf(",")){
-            //     const toArray = signUpComorbid.split(',')
-            //     arrayComorbid = toArray.map(e => e.trim())
-            // }
             const signupdata = {
                 "name": signUpName,
                 "email": signUpEmail,
@@ -50,7 +45,7 @@ export default function SignUp(props) {
             // axios disini
             console.log(signupdata, "<< signupdta");
             dispatch(signUp(signupdata))
-            
+            setAlertSuccess(true)
         }
         else {
             setAlertFail(true)
