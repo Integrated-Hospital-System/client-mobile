@@ -1,5 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+// route.params yang di destruct, usestate tempAlarm gw komen dulu
+
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, ScrollView, View, ImageBackground,Image } from 'react-native';
 import { Avatar, Button, Card, TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux'
 import { updateAlarm, asyncFetchMeds } from '../store/actions'
@@ -7,115 +9,211 @@ import {
   useFonts,
   PassionOne_400Regular
 } from '@expo-google-fonts/dev'
-import MedCard from '../components/MedCard'
-const axios = require('axios')
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import IconFA from 'react-native-vector-icons/FontAwesome'
 
 
-export default function SetAlarm({route, navigation}) {
+export default function SetAlarm({ route, navigation }) {
   const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
-  const medicineCache = useSelector(state => state.medicineReducer.medicines)
-  const { name, alarm, totalMed, timesPerDay, doses } = route.params
-  const [tempAlarm, setTempAlarm] = useState(JSON.parse(JSON.stringify(alarm, null, 2)));
-  const [contoh, setContoh] = useState('')
+  const [time, setTime] = useState('')
+  const [indexToEdit, setIndexToEdit] = useState('')
+  // const { name, alarm, totalMed, timesPerDay, doses } = route.params
+  // const [tempAlarm, setTempAlarm] = useState(JSON.parse(JSON.stringify(alarm, null, 2)));
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (value) => {
+    const date = new Date(value)
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const alarmTime = date.toLocaleString('en-US', { timeZone })
+    const hour = new Date(alarmTime).getHours()
+    const minute = new Date(alarmTime).getMinutes()
+    let minutes;
+    let hours;
+    minute < 10 ? minutes = '0' + minute : minutes = minute
+    hour < 10 ? hours = '0' + hour : hours = hour
+    setTime(`${hours}:${minutes}`)
+    alarm[indexToEdit] = `${hours}:${minutes}`
+    hideDatePicker();
+  };
+
+  function updateSchedule() {
+    dispatch(updateAlarm(name, tempAlarm, medicines))
+    navigation.navigate('MaMed')
+  }
+
+
+
+  //  const { name, alarm, totalMed, timesPerDay, doses } = {
+  //   alarm: [
+  //     "--:--",
+  //     "--:--",
+  //     "--:--",
+  //   ],
+  //   doses: 1,
+  //   name: "Antibiotik",
+  //   timesPerDay: 3,
+  //   totalMed: 12,
+  // }
+
+  const name = "antibiotik"
+  const alarm = [
+    "--:--",
+    "--:--",
+    "--:--",
+  ]
+  const totalMed = 12
+  const timesPerDay = 3
+  const doses = 1
+
+  const [tempAlarm, setTempAlarm] = useState(alarm);
+
+
+
 
   if (!fontsLoaded) {
     console.log(fontsLoaded)
     return <Text>Loading...</Text>
   }
 
-  function onChange (value) {
-    setContoh(value)
-  }
-
-  console.log(tempAlarm, '<<< tempAlarm');
-
-  function updateSchedule () {
-    console.log(tempAlarm, '<<< dari setAlarm');
-    dispatch(updateAlarm(name, tempAlarm, medicines))
-    dispatch(asyncFetchMeds())
-    console.log('ASASDASDASDASDASDASDASDASDASDQKWDKJQWNDJQNWDJKQNWD ++++++++++++++++++++++++++');
-    console.log(medicineCache, '<<<< after update');
-    navigation.navigate('MaMed')
-  }
-
-
   return (
     <>
-      <ScrollView style={styles.container}>
-        <View style={styles.view} >
+
+      <ScrollView style={{backgroundColor:'white'}}>
+        <View style={{
+          height: 700,
+          width: 700,
+          borderRadius: 400,
+          position: 'absolute',
+          borderColor: '#0ec7a8',
+          backgroundColor: '#0ec7a8',
+          borderWidth: 4,
+          alignSelf:'center',
+          top: -380
+        }}></View>
+        <View style={{
+          marginTop: 50,
+        }} >
+          {/* <Image source={require('../src/images/setAlarmImage.png')} style={{
+            alignSelf: "center",
+            width: "70%",
+            height: "40%"
+          }}></Image> */}
+          <Icon
+          name="bell-circle"
+          size={150}
+          color='white'
+          style={{
+            alignSelf: 'center'
+          }}
+          />
           <Text
-          style={{fontFamily: 'PassionOne_400Regular', fontSize: 40}}
+            style={{ fontFamily: 'coolvetica-rg', fontSize: 40, alignSelf: 'center' }}
           >{name}</Text>
           <Text
-          style={{fontFamily: 'PassionOne_400Regular', fontSize: 25}}
+            style={{ fontFamily: 'coolvetica-rg', fontSize: 20, color: '#005c4e', alignSelf: 'center' }}
           >Set Alarm</Text>
-          <View style={{marginTop: 50}}>
-          <TextInput
-          label={`Times a day`}
-          value={String(timesPerDay)}
-          style={{backgroundColor: 'white'}}
-          disabled={true}
-          />
-          <TextInput
-          // label={`Alarm ${index + 1}`}
-          keyboardType={'numeric'}
-          // placeholder={tempAlarm[index] === '--:--' ? '' : tempAlarm[index]}
-          value={contoh}
-          style={{backgroundColor: 'white'}}
-          maxLength={5}
-          onChangeText={onChange}
-          />
-          {alarm.map((alarm, index) => {
-            return (
-              <TextInput
-              key={Math.random()}
-              label={`Alarm ${index + 1}`}
-              keyboardType={'numeric'}
-              // placeholder={tempAlarm[index] === '--:--' ? '' : tempAlarm[index]}
-              value={tempAlarm[index] === '--:--' ? '' : tempAlarm[index]}
-              style={{backgroundColor: 'white'}}
-              maxLength={5}
-              onChangeText={(value) => {
-                const digit = value.length
-                if (value.length === 2) value = value + ':'
-                else if (value === '') value = '--:--'
-                const newArr = JSON.parse(JSON.stringify(tempAlarm))
-                console.log(tempAlarm, '<<< newArr sebelum reassign')
-                newArr[index] = value
-                setTempAlarm(newArr)
-                console.log(tempAlarm, '<<< tempAlaram')
-              }}
-              />
-            )
-          })}
+          <View style={{ marginTop: 50, flex: 1 }}>
+            <TextInput
+              label={`Times a day`}
+              value={String(timesPerDay)}
+              style={{ backgroundColor: 'white',marginHorizontal: 40, }}
+              disabled={true}
+            />
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="time"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
+            {alarm.map((oneAlarm, index) => {
+              return (
+                <View style={{
+                  flexDirection: "row",
+                  alignItems: 'center',
+                  marginHorizontal: 40,
+                  backgroundColor: 'white',
+                  borderBottomWidth: 1,
+                  borderColor: "#0ec7a8",
+                  // borderTopLeftRadius: 20,
+                  // borderTopRightRadius: 20
+              }}>
+                  <IconFA
+                  name="check-square-o"
+                  size={30}
+                  style={{ paddingHorizontal: 10}}
+                  color='#0ec7a8'
+                  >
+                  </IconFA>
+                  <TextInput
+                    key={Math.random()}
+                    label={`Alarm ${index + 1}`}
+                    keyboardType={'numeric'}
+                    value={oneAlarm === '--:--' ? '' : oneAlarm}
+                    underlineColor="white"
+                    style={{ backgroundColor: 'white', width: 250}}
+                    // onTouchStart={showDatePicker(index)}
+                    onTouchEnd={() => {
+                      setIndexToEdit(index)
+                      showDatePicker()
+                    }}
+                  />
+                </View>
+                // <TextInput
+                // key={Math.random()}
+                // label={`Alarm ${index + 1}`}
+                // keyboardType={'numeric'}
+                // value={oneAlarm === '--:--' ? '' : oneAlarm}
+                // style={{backgroundColor: 'white'}}
+                // maxLength={5}
+                // onChangeText={(value) => {
+                //   const digit = value.length
+                //   if (digit === 2) value = value + ':'
+                //   else if (value === '') value = '--:--'
+                //   alarm[index] = value
+                //   const temporary = JSON.parse(JSON.stringify(alarm))
+                //   setTempAlarm(temporary)
+                // }}
+                // />
+              )
+            })}
           </View>
-          <Button style={{marginTop: 20}} onPress={updateSchedule} >Update</Button>
+          <Button 
+          icon='pencil'
+          style={{ 
+            marginTop: 10 ,
+            borderRadius: 10,
+            backgroundColor: '#19b59b',
+            marginHorizontal: 40,
+            justifyContent: 'center',
+            height: 50,
+            // border
+          }} 
+          color= "black"
+          onPress={updateSchedule} 
+          >Update</Button>
         </View>
-        <View/>
+        <View />
       </ScrollView>
     </>
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  view: {
-    marginTop: 100,
-    flex: 5,
-    textAlign: 'center',
-    marginLeft: '8%',
-    marginRight: '8%',
-    // backgroundColor: 'blue'
-  },
+
   card: {
     marginTop: 20,
     width: "100%",
