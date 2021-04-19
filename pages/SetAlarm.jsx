@@ -8,9 +8,11 @@ import {
   PassionOne_400Regular
 } from '@expo-google-fonts/dev'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useIsFocused } from '@react-navigation/native'
 
 
 export default function SetAlarm({route, navigation}) {
+  const isFocused = useIsFocused()
   const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const [time, setTime] = useState('')
@@ -21,8 +23,14 @@ export default function SetAlarm({route, navigation}) {
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+
+  useEffect(() => {
+    console.log(route.params, '<<<<< route params dari page set Alarm');
+    setTempAlarm(JSON.parse(JSON.stringify(alarm, null, 2)))
+  }, [isFocused])
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -43,7 +51,8 @@ export default function SetAlarm({route, navigation}) {
     minute < 10 ? minutes = '0' + minute : minutes = minute
     hour < 10 ? hours = '0' + hour : hours = hour
     setTime(`${hours}:${minutes}`)
-    alarm[indexToEdit] = `${hours}:${minutes}`
+    tempAlarm[indexToEdit] = `${hours}:${minutes}`
+    // alarm[indexToEdit] = `${hours}:${minutes}`
     hideDatePicker();
   };
 
@@ -80,7 +89,7 @@ export default function SetAlarm({route, navigation}) {
             onConfirm={handleConfirm}
             onCancel={hideDatePicker}
           />
-          {alarm.map((oneAlarm, index) => {
+          {tempAlarm.map((oneAlarm, index) => {
             return (
               <TextInput
               key={Math.random()}

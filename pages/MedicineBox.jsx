@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
-import { asyncFetchMeds } from '../store/actions'
+import { dispatchMedsFromCache } from '../store/actions'
+import { useIsFocused } from '@react-navigation/native'
 import {
   useFonts,
   PassionOne_400Regular
@@ -10,13 +11,20 @@ import MedCard from '../components/MedCard'
 const axios = require('axios')
 
 
-export default function Doctors() {
+export default function Doctors( { navigation } ) {
+  const isFocused = useIsFocused()
   const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
+  // const [medicines, setMedicines] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
+  
+  useEffect(() => {
+    console.log(medicines, '<<<<<<<<<<<, medicines dari useeffect medbox')
+    console.log('masuk useeffect');
+  }, [isFocused])
 
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
@@ -24,7 +32,9 @@ export default function Doctors() {
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container}
+      horizontal
+      >
         <View style={styles.view} >
           <Text
           style={{fontFamily: 'PassionOne_400Regular', fontSize: 40}}

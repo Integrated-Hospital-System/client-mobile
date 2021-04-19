@@ -12,20 +12,13 @@ import { Provider } from 'react-redux'
 import store from './store'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
+import AppointmentForm from './pages/AppointmentForm'
 import AppContainer from './navigation'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
 const Drawer = createDrawerNavigator()
-// const theme = {
-//   ...DefaultTheme,
-//   colors: {
-//     ...DefaultTheme.colors,
-//     primary: 'green',
-//     accent: 'blue',
-//   },
-// };
 
 
 export default function App() {
@@ -51,6 +44,7 @@ export default function App() {
             <Drawer.Screen name="SignIn" component={SignIn} />
             <Drawer.Screen name="SignUp" component={SignUp} />
             <Drawer.Screen name="Set Alarm" component={SetAlarm} />
+            <Drawer.Screen name="AppointmentForm" component={AppointmentForm} />
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>

@@ -248,6 +248,24 @@ export const asyncFetchMeds = () => async (dispatch) => {
     // }
 }
 
+export const dispatchMedsFromCache = () => (dispatch) => {
+  const object = {
+    "alarms": [
+      "--:--",
+    ],
+    "doses": 1,
+    "medicine": {
+      "description": "Vitamin",
+      "id": "2",
+      "name": "Vitamin D",
+    },
+    "notes": "",
+    "timesPerDay": 1,
+    "totalMedicine": 6,
+  }
+  return object
+}
+
 export const deleteMed = (newMeds) => async (dispatch) => {
   dispatch({type: 'medicine/fetch', payload: newMeds})
 }

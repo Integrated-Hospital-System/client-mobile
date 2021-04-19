@@ -7,6 +7,7 @@ import { useNavigation, Platform } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteMed } from '../store/actions'
+import { useIsFocused } from '@react-navigation/native'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -17,6 +18,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function DocCard(props) {
+  const isFocused = useIsFocused()
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const dispatch = useDispatch()
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -35,7 +37,9 @@ export default function DocCard(props) {
       name="edit-3"
       size={20}
       style={{marginRight: 20}}
-      onPress={() => {navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})}}
+      onPress={() => {
+        navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})
+      }}
       />
       <Icon
       name="trash-2"
@@ -45,6 +49,12 @@ export default function DocCard(props) {
       />
     </View>
   )
+
+  useEffect(() => {
+    console.log(`medicine ${name} have alarms as such:
+    ${alarm}`);
+  }, [isFocused])
+
 
   function deleteMed (name) {
     const deleted = medicines.filter(med => med.medicine.name !== name)

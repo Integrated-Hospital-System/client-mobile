@@ -15,6 +15,11 @@ export default function SignIn(props) {
     const [password, setPassword] = useState("");
     const [alertFailLogin, setAlertFailLogin] = useState(false)
 
+    useEffect(async () => {
+        const cachenow = await AsyncStorage.setItem('user-data', '')
+        console.log(cachenow, '<<<<< cache at sign in page');
+        console.log('masuk sign in pertama kali')
+    }, [])
 
     // async function tesAsync(){
     //     console.log(await AsyncStorage.setItem('tes_key', "tes valueeeeeee"), '<< set async' )
@@ -27,23 +32,15 @@ export default function SignIn(props) {
         // check email dan passwordnya kalo bener masukin di cache
         const response = await dispatch(signIn({email, password}))
         const userData = response.data
-        // console.log(userData.account, '<<< userData');
         if (userData.account.email === email) {
-            console.log('masuk sini');
-            console.log(userData, '<<< user Data');
             try {
                 await AsyncStorage.setItem('user-data', JSON.stringify(userData, null, 2))
+                setEmail('')
+                setPassword('')
                 props.navigation.navigate('Home');
             } catch (error) {
                 console.log(error);
             }
-            // async (userData) => {
-            //     console.log("ada");
-            //     try {
-            //     } catch (e) {
-            //         console.log(e);
-            //     }
-            // }
         }
         // axios({
         //     url: "https://localhost:3001/accounts",
@@ -131,8 +128,6 @@ export default function SignIn(props) {
                     backgroundColor: 'white',
                     borderBottomWidth: 1,
                     borderColor: "#0ec7a8",
-                    // borderBottomLeftRadius: 20,
-                    // borderBottomRightRadius: 20
                 }}>
                 <Ionicons
                     name="key"
@@ -202,16 +197,10 @@ export default function SignIn(props) {
                 message="Wrong Email or Password"
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
-                // showCancelButton={true}
                 showConfirmButton={true}
-                // cancelText="No, cancel"
                 confirmText=" ok "
                 confirmButtonColor="#0ec7a8"
-                // onCancelPressed={() => {
-                //     setAlertFailLogin(false)
-                // }}
                 onConfirmPressed={() => {
-                    // do something adn close alertnya
                     setAlertFailLogin(false)
                 }}
             />
@@ -222,9 +211,7 @@ export default function SignIn(props) {
 const styles = StyleSheet.create({
     signInContainer: {
         flex: 1,
-        // justifyContent: 'center',
         backgroundColor: 'white',
-        // height: 100%,
         paddingTop: 50
     },
     helloText: {
