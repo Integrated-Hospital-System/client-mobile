@@ -15,11 +15,13 @@ import Collapsible from 'react-native-collapsible';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { Ionicons } from '@expo/vector-icons';
 import SpecialityCard from '../components/SpecialityCard'
+import {useNavigation} from "@react-navigation/native"
 
 export default function AccordionView(props) {
+  const navigation  = useNavigation()
   const randomImageNumber = (Math.floor(Math.random() * 2)).toString()
   const [collapsed, setCollaped] = useState(true)
-  const { dummyDoctor, navigation } = props
+  const { dummyDoctor } = props
   const toggleExpanded = () => {
     setCollaped(!collapsed);
   };
@@ -81,6 +83,8 @@ export default function AccordionView(props) {
               })
             }
           </View>
+
+
           <Button
             mode="contained"
             icon="check-circle"
@@ -95,10 +99,16 @@ export default function AccordionView(props) {
           >
             Choose Dr. {dummyDoctor.name}
           </Button>
+
+
+
           <View style={{
             marginTop: 10,
             backgroundColor: "white",
-            borderRadius: 15
+            borderRadius: 15,
+            borderWidth: 2,
+            borderColor: "#0ec7a8",
+            backgroundColor: '#f0fffb',
           }}>
             <View style={styles.toggleContainer}>
               <Text style={styles.toggleTitle}>Dr. {dummyDoctor.name}'s Schedule</Text>
@@ -181,7 +191,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // marginVertical: 10,
     alignItems: 'center',
-    height: 60,
+    height: 40,
     width: 300,
 
     // borderRadius: 30
