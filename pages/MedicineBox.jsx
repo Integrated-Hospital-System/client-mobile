@@ -23,7 +23,9 @@ export default function Doctors() {
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container}
+      horizontal
+      >
         <View style={styles.view} >
           <Text
           style={{fontFamily: 'PassionOne_400Regular', fontSize: 40}}

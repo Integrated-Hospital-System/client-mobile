@@ -12,6 +12,7 @@ import { Provider } from 'react-redux'
 import store from './store'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
+import AppointmentForm from './pages/AppointmentForm'
 import AppContainer from './navigation'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
@@ -44,13 +45,14 @@ export default function App() {
     <PaperProvider>
       <Provider store={store}>
         <NavigationContainer>
-          <Drawer.Navigator initialRouteName="SignIn" drawerContent={(props) => <DrawerContent {...props} />}>
+          <Drawer.Navigator initialRouteName="Mamed" drawerContent={(props) => <DrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="Mamed" component={MaMed} />
             <Drawer.Screen name="Doctors" component={Doctors} />
             <Drawer.Screen name="SignIn" component={SignIn} />
             <Drawer.Screen name="SignUp" component={SignUp} />
             <Drawer.Screen name="Set Alarm" component={SetAlarm} />
+            <Drawer.Screen name="AppointmentForm" component={AppointmentForm} />
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>
