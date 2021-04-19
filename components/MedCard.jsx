@@ -1,10 +1,14 @@
+//set interval, set alarm time, const alarm list, alarm list di render, gw comment dulu 
+
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, ImageBackground, Image, Text } from 'react-native';
 import { Avatar, Card } from 'react-native-paper';
 import { useNavigation, Platform } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
+import { useSelector, useDispatch } from 'react-redux'
+import { deleteMed } from '../store/actions'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -15,6 +19,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function DocCard(props) {
+  const medicines = useSelector(state => state.medicineReducer.medicines)
+  const dispatch = useDispatch()
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -23,36 +29,42 @@ export default function DocCard(props) {
   const { name, totalMed, alarm, timesPerDay, doses } = props
   const parsing = JSON.parse(JSON.stringify(totalMed, null, 4))
   const [medAmmount, setMedAmmout] = useState(parsing)
-  const alarmList = setAlarmTime()
-  const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="#3075b5" style={styles.avatar}/>
+  // const alarmList = setAlarmTime()
+  const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="white" style={styles.avatar} />
   const RightContent = props => (
-    <Icon
-    name="edit-3"
-    size={30}
-    style={{marginRight: 20}}
-    onPress={() => {navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})}}
-    // onPress={() => {navigation.navigate('Home')}}
-    // onPress={() => {setMedAmmout(medAmmount - 1)}}
-    />
+
+    <View>
+      <Icon
+        name="edit-3"
+        size={20}
+        style={{ marginRight: 30 }}
+        onPress={() => { navigation.navigate("Set Alarm", { name, alarm, totalMed, timesPerDay, doses }) }}
+      />
+      <Icon
+        name="trash-2"
+        size={20}
+        style={{ marginRight: 30 }}
+        onPress={() => { deleteMed(name) }}
+      />
+    </View>
   )
 
-  useEffect(() => {
-    console.log(alarmList, '<<< alarm list di kartu');
-  }, [alarmList, alarm])
+  function deleteMed(name) {
+    const deleted = medicines.filter(med => med.medicine.name !== name)
+    dispatch(deleteMed(deleted))
+    console.log(medicines, '<<< medicines');
+  }
 
   // functions for push notification starts here
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
     });
-
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
     });
-
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
@@ -60,18 +72,17 @@ export default function DocCard(props) {
   }, []);
 
   async function schedulePushNotification(param) {
-    alert('ini push notif')
+    alert(`Boop Boop... 💊\nIt's time to take your ${name} x ${doses}`)
     navigation.navigate('Home')
     await Notifications.scheduleNotificationAsync({
       content: ({
-        title: "You've got mail! 📬",
-        body: `minutes ${param}`,
+        title: "Boop Boop... 💊",
+        body: `It's time to take your ${name} x ${doses}`,
         data: { data: 'goes here' },
       }),
       trigger: { seconds: 1 },
     });
   }
-
   async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {
@@ -90,7 +101,7 @@ export default function DocCard(props) {
     } else {
       alert('Must use physical device for Push Notifications');
     }
-  
+
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {
         name: 'default',
@@ -99,53 +110,116 @@ export default function DocCard(props) {
         lightColor: '#FF231F7C',
       });
     }
-  
+
     return token;
   }
-
-  setInterval(() => {
-    const hours = new Date().getHours()
-    const minutes = new Date().getMinutes()
-    const seconds = new Date().getSeconds()
-    alarm.forEach(time => {
-      const alarmHour = +(time[0]+time[1])
-      const alarmMinutes = +(time[3]+time[4])
-      if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
-        alert(minutes)
-        schedulePushNotification(minutes)
-      }
-    })
-  }, 1000)
-
+  // setInterval(() => {
+  //   const hours = new Date().getHours()
+  //   const minutes = new Date().getMinutes()
+  //   const seconds = new Date().getSeconds()
+  //   alarm.forEach(time => {
+  //     const alarmHour = +(time[0]+time[1])
+  //     const alarmMinutes = +(time[3]+time[4])
+  //     if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
+  //       alert(minutes)
+  //       schedulePushNotification(minutes)
+  //     }
+  //   })
+  // }, 1000)
   // functions for push notification ends here
 
-  function setAlarmTime () {
-    let validator = false
-    // if (alarm.length === 0) return "You haven't set the alarm"
-    let temp = ''
-    alarm.forEach((time, index) => {
-      time !== '--:--' ? validator = true : console.log('next');
-      index === alarm.length - 1 ? temp += `${time}` : temp += `${time} | `
-    });
-    if (validator) return temp
-    else return "No alarm set"
-  }
-
+  // function setAlarmTime () {
+  //   let validator = false
+  //   let temp = ''
+  //   alarm.forEach((time, index) => {
+  //     time !== '--:--' ? validator = true : Math.random()
+  //     index === alarm.length - 1 ? temp += `${time}` : temp += `${time} | `
+  //   });
+  //   if (validator) return temp
+  //   else return "No alarm set"
+  // }
   return (
-    <Card style={styles.card}>
-        <Card.Title title={name} subtitle={alarmList} left={LeftContent} right={RightContent} />
-    </Card>
-  );
-}
+    // <View style={{
+    //   width: 200,
+    //   height: 300,
+    //   // backgroundColor: 'blue',
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    // }}>
 
+    //   <ImageBackground source={require('../src/images/med-box-image.png')} style={{ width: "100%", height: "100%", alignSelf: "center", }} >
+    //     <View style={{
+    //       marginTop: 80
+    //     }}>
+
+    //       <Avatar.Text size={50} label={medAmmount} color="#3075b5" style={{ alignSelf: 'center', backgroundColor: 'white' }} />
+    //       <Text style={{
+    //         textAlign: 'center',
+    //         fontFamily: "coolvetica-rg",
+    //         fontSize: 20,
+    //         marginBottom: 10
+    //       }}>
+    //         {name}
+    //       </Text>
+    //       {/* <Text style={{
+    //         textAlign: 'center'
+    //       }}>
+    //         setalarm
+    //       </Text> */}
+    //       <View style={{
+    //         flexDirection: 'row',
+    //         // alignSelf:'center',
+    //         justifyContent: 'center',
+    //         // backgroundColor: 'purple',
+    //         marginLeft: 20
+    //       }}>
+    //         <Icon
+    //           name="edit-3"
+    //           size={20}
+    //           style={{ marginRight: 20 }}
+    //           onPress={() => { navigation.navigate("Set Alarm", { name, alarm, totalMed, timesPerDay, doses }) }}
+    //         />
+    //         <Icon
+    //           name="trash-2"
+    //           size={20}
+    //           style={{ marginRight: 20 }}
+    //           onPress={() => { deleteMed(name) }}
+    //         />
+    //       </View>
+    //       <Text>
+    //         {/* {alarmList} */}
+    //       </Text>
+    //     </View>
+    //   </ImageBackground>
+    // </View>
+
+    <Card style={styles.card}>
+        <Card.Title title={name} /*subtitle={alarmList}*/ subtitle={'no alarm set'} subtitleStyle={{marginLeft: 10}} titleStyle={{marginLeft: 10}} left={LeftContent} right={RightContent} />
+    </Card>
+  )
+}
 const styles = StyleSheet.create({
+  // card: {
+  //   shadowOpacity: 0.7,
+  //   shadowRadius: 5.5,
+  //   width: 140,
+  //   height: 200,
+  //   marginTop: 80,
+  //   alignSelf: 'center',
+  //   opacity: 0.1
+  // },
   card: {
-    marginTop: 20,
+    marginBottom: 20,
     width: "100%",
-    shadowOpacity: 0.7,
-    shadowRadius: 2.5
+    shadowOpacity:1,
+    borderRadius: 40,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderColor: '#5e8275',
+    
   },
   avatar: {
-    backgroundColor: 'white'
+    backgroundColor: '#179167',
+
   }
 })
