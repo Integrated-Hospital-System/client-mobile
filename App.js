@@ -17,16 +17,9 @@ import AppContainer from './navigation'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
+import Confimation from './pages/Confirmation'
 
 const Drawer = createDrawerNavigator()
-// const theme = {
-//   ...DefaultTheme,
-//   colors: {
-//     ...DefaultTheme.colors,
-//     primary: 'green',
-//     accent: 'blue',
-//   },
-// };
 
 
 export default function App() {
@@ -47,12 +40,13 @@ export default function App() {
         <NavigationContainer>
           <Drawer.Navigator initialRouteName="Mamed" drawerContent={(props) => <DrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={Home} />
-            <Drawer.Screen name="Mamed" component={MaMed} />
+            <Drawer.Screen name="MaMed" component={MaMed} />
             <Drawer.Screen name="Doctors" component={Doctors} />
             <Drawer.Screen name="SignIn" component={SignIn} />
             <Drawer.Screen name="SignUp" component={SignUp} />
             <Drawer.Screen name="Set Alarm" component={SetAlarm} />
             <Drawer.Screen name="AppointmentForm" component={AppointmentForm} />
+            <Drawer.Screen name="Confirmation" component={Confimation} />
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>

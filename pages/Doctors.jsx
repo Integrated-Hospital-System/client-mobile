@@ -18,79 +18,11 @@ export default function Doctors() {
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
-
+  console.log(doctors, '<<<< doctors di page doctors');
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
   }
-  const dummyDoctors = [
-    {
-      "id": "2",
-      "name": "Hasan",
-      "username": "hasan",
-      "email": "hasan@email.com",
-      "password": "hasan",
-      "role": "doctor",
-      "speciality": ["tht", "organ dalam"],
-      "practice": [
-        {
-          "day": "monday",
-          "start": "9:15",
-          "end": "15:45"
-        },
-        {
-          "day": "tuesday",
-          "start": "9:15",
-          "end": "15:45"
-        },
-        {
-          "day": "wednesday",
-          "start": "9:15",
-          "end": "15:45"
-        },
-        {
-          "day": "thursday",
-          "start": "9:15",
-          "end": "15:45"
-        },
-        {
-          "day": "friday",
-          "start": "9:15",
-          "end": "11:45"
-        }
-      ]
-    },
-    {
-      "id": "3",
-      "name": "Ratna",
-      "username": "ratna",
-      "email": "ratna@email.com",
-      "password": "ratna",
-      "role": "doctor",
-      "speciality": ["mata", "organ dalam"],
-      "practice": [
-        {
-          "day": "monday",
-          "start": "8:15",
-          "end": "17:45"
-        },
-        {
-          "day": "tuesday",
-          "start": "8:17",
-          "end": "17:45"
-        },
-        {
-          "day": "thursday",
-          "start": "8:17",
-          "end": "17:45"
-        },
-        {
-          "day": "friday",
-          "start": "8:15",
-          "end": "11:45"
-        }
-      ]
-    }
-  ]
+  
   return (
     <View
       style={{
@@ -153,8 +85,8 @@ export default function Doctors() {
             </View>
           </View>
           {
-            dummyDoctors.map(dummyDoctor => {
-              return <AccordionView dummyDoctor={dummyDoctor} key={dummyDoctor.id} />
+            doctors.map(doctor => {
+              return <AccordionView doctor={doctor} key={doctor.id} />
             })
           }
 

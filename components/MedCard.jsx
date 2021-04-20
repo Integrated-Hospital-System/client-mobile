@@ -9,6 +9,7 @@ import { useNavigation, Platform } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteMed } from '../store/actions'
+import { useIsFocused } from '@react-navigation/native'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,6 +20,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function DocCard(props) {
+  const isFocused = useIsFocused()
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const dispatch = useDispatch()
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -29,30 +31,41 @@ export default function DocCard(props) {
   const { name, totalMed, alarm, timesPerDay, doses } = props
   const parsing = JSON.parse(JSON.stringify(totalMed, null, 4))
   const [medAmmount, setMedAmmout] = useState(parsing)
-  // const alarmList = setAlarmTime()
+  const alarmList = setAlarmTime()
   const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="white" style={styles.avatar} />
   const RightContent = props => (
-
     <View>
       <Icon
-        name="edit-3"
-        size={20}
-        style={{ marginRight: 30 }}
-        onPress={() => { navigation.navigate("Set Alarm", { name, alarm, totalMed, timesPerDay, doses }) }}
+      name="edit-3"
+      size={20}
+      style={{marginRight: 20}}
+      onPress={() => {
+        navigation.navigate("Set Alarm", {name, alarm, totalMed, timesPerDay, doses})
+      }}
       />
       <Icon
-        name="trash-2"
-        size={20}
-        style={{ marginRight: 30 }}
-        onPress={() => { deleteMed(name) }}
+      name="trash-2"
+      size={20}
+      style={{marginRight: 20}}
+      onPress={() => {
+        console.log(name);
+        deleteMed(name)
+      }}
       />
     </View>
   )
 
-  function deleteMed(name) {
-    const deleted = medicines.filter(med => med.medicine.name !== name)
-    dispatch(deleteMed(deleted))
-    console.log(medicines, '<<< medicines');
+  useEffect(() => {
+    console.log(`medicine ${name} have alarms as such:
+    ${alarm}`);
+  }, [isFocused])
+
+
+  const deleteMed = (name) => {
+    const afterDeleted = medicines.filter(med => med.medicine.name !== name)
+    console.log(afterDeleted, '<<< after delete')
+    // dispatch(deleteMed(afterDeleted))
+    // console.log(medicines, '<<< medicines');
   }
 
   // functions for push notification starts here
@@ -73,7 +86,7 @@ export default function DocCard(props) {
 
   async function schedulePushNotification(param) {
     alert(`Boop Boop... 💊\nIt's time to take your ${name} x ${doses}`)
-    navigation.navigate('Home')
+    navigation.navigate('Confirmation', {name})
     await Notifications.scheduleNotificationAsync({
       content: ({
         title: "Boop Boop... 💊",
@@ -113,88 +126,34 @@ export default function DocCard(props) {
 
     return token;
   }
-  // setInterval(() => {
-  //   const hours = new Date().getHours()
-  //   const minutes = new Date().getMinutes()
-  //   const seconds = new Date().getSeconds()
-  //   alarm.forEach(time => {
-  //     const alarmHour = +(time[0]+time[1])
-  //     const alarmMinutes = +(time[3]+time[4])
-  //     if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
-  //       alert(minutes)
-  //       schedulePushNotification(minutes)
-  //     }
-  //   })
-  // }, 1000)
+  setInterval(() => {
+    const hours = new Date().getHours()
+    const minutes = new Date().getMinutes()
+    const seconds = new Date().getSeconds()
+    alarm.forEach(time => {
+      const alarmHour = +(time[0]+time[1])
+      const alarmMinutes = +(time[3]+time[4])
+      if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
+        alert(minutes)
+        schedulePushNotification(minutes)
+      }
+    })
+  }, 1000)
   // functions for push notification ends here
 
-  // function setAlarmTime () {
-  //   let validator = false
-  //   let temp = ''
-  //   alarm.forEach((time, index) => {
-  //     time !== '--:--' ? validator = true : Math.random()
-  //     index === alarm.length - 1 ? temp += `${time}` : temp += `${time} | `
-  //   });
-  //   if (validator) return temp
-  //   else return "No alarm set"
-  // }
+  function setAlarmTime () {
+    let validator = false
+    let temp = ''
+    alarm.forEach((time, index) => {
+      time !== '--:--' ? validator = true : Math.random()
+      index === alarm.length - 1 ? temp += `${time}` : temp += `${time} | `
+    });
+    if (validator) return temp
+    else return "No alarm set"
+  }
   return (
-    // <View style={{
-    //   width: 200,
-    //   height: 300,
-    //   // backgroundColor: 'blue',
-    //   justifyContent: 'center',
-    //   alignItems: 'center',
-    // }}>
-
-    //   <ImageBackground source={require('../src/images/med-box-image.png')} style={{ width: "100%", height: "100%", alignSelf: "center", }} >
-    //     <View style={{
-    //       marginTop: 80
-    //     }}>
-
-    //       <Avatar.Text size={50} label={medAmmount} color="#3075b5" style={{ alignSelf: 'center', backgroundColor: 'white' }} />
-    //       <Text style={{
-    //         textAlign: 'center',
-    //         fontFamily: "coolvetica-rg",
-    //         fontSize: 20,
-    //         marginBottom: 10
-    //       }}>
-    //         {name}
-    //       </Text>
-    //       {/* <Text style={{
-    //         textAlign: 'center'
-    //       }}>
-    //         setalarm
-    //       </Text> */}
-    //       <View style={{
-    //         flexDirection: 'row',
-    //         // alignSelf:'center',
-    //         justifyContent: 'center',
-    //         // backgroundColor: 'purple',
-    //         marginLeft: 20
-    //       }}>
-    //         <Icon
-    //           name="edit-3"
-    //           size={20}
-    //           style={{ marginRight: 20 }}
-    //           onPress={() => { navigation.navigate("Set Alarm", { name, alarm, totalMed, timesPerDay, doses }) }}
-    //         />
-    //         <Icon
-    //           name="trash-2"
-    //           size={20}
-    //           style={{ marginRight: 20 }}
-    //           onPress={() => { deleteMed(name) }}
-    //         />
-    //       </View>
-    //       <Text>
-    //         {/* {alarmList} */}
-    //       </Text>
-    //     </View>
-    //   </ImageBackground>
-    // </View>
-
     <Card style={styles.card}>
-        <Card.Title title={name} /*subtitle={alarmList}*/ subtitle={'no alarm set'} subtitleStyle={{marginLeft: 10}} titleStyle={{marginLeft: 10}} left={LeftContent} right={RightContent} />
+        <Card.Title title={name} subtitle={alarmList} subtitleStyle={{marginLeft: 10}} titleStyle={{marginLeft: 10}} left={LeftContent} right={RightContent} />
     </Card>
   )
 }

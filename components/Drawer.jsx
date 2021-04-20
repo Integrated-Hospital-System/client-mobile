@@ -12,6 +12,7 @@ import Icon2 from 'react-native-vector-icons/AntDesign'
 import Icon3 from 'react-native-vector-icons/Fontisto'
 import Mamed from '../pages/MedicineBox'
 import Doctors from '../pages/Doctors'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export function DrawerContent (props) {
     return (
@@ -73,7 +74,11 @@ export function DrawerContent (props) {
                     />
                 )}
                 label="Sign Out"
-                onPress={() => {signOut()}}
+                onPress={async () => {
+                    const cachefromsignout = await AsyncStorage.getItem('user-data')
+                    await AsyncStorage.removeItem('user-data')
+                    props.navigation.navigate('SignIn')
+                }}
             />
         </Drawer.Section>
     </View>

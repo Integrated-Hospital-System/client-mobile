@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { asyncFetchMeds, asyncFetchDoctors } from '../store/actions'
 import { TouchableOpacity, Text, Image, View, StyleSheet, ImageBackground, TouchableHighlight, ScrollView } from 'react-native';
@@ -8,16 +8,34 @@ import { Ionicons } from "@expo/vector-icons"
 import { BoxShadow } from "react-native-shadow";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Homepage() {
+export default function Homepage({navigation}) {
+  const [cache, setCache] = useState('')
   const dispatch = useDispatch()
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const doctors = useSelector(state => state.doctorReducer.doctors)
   useEffect(() => {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())
+    console.log(doctors, '<<< doctors');
   }, [])
-  console.log(medicines, '<<< dari server')
   const userData = null
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user-data')
+      if(value !== null) {
+        setCache(JSON.parse(value))
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  useEffect(() => {
+    getData()
+  }, [])
+
+  if (!cache) return (<Text>Loading...</Text>)
+
   return (
     <ScrollView
       vertical
@@ -26,8 +44,8 @@ export default function Homepage() {
 
         <View style={styles.topContainer}>
           <Text style={styles.welcomeText}>Welcome Back!</Text>
-          <Text style={styles.nameText}>Acong</Text>
-          <Text style={styles.emailText}>acong@mail.com</Text>
+          <Text style={styles.nameText}>{cache.account.name}</Text>
+          <Text style={styles.emailText}>{cache.account.email}</Text>
         </View>
         <Text style={{
           textAlign: 'center',
@@ -106,7 +124,7 @@ export default function Homepage() {
             justifyContent: 'center'
           }}
           color='#1d7a57'
-          
+          onPress={() => navigation.navigate('Doctors')}
         >
           New Appointment
           </Button>

@@ -21,24 +21,19 @@ export default function AccordionView(props) {
   const navigation  = useNavigation()
   const randomImageNumber = (Math.floor(Math.random() * 2)).toString()
   const [collapsed, setCollaped] = useState(true)
-  const { dummyDoctor } = props
+  const { doctor } = props
   const toggleExpanded = () => {
     setCollaped(!collapsed);
   };
-  const arrayOfDays = dummyDoctor.practice.map(eachDay => {
+  const arrayOfDays = doctor.practice.map(eachDay => {
     return eachDay.day
   })
-  const arrayOfTime = dummyDoctor.practice.map(eachDay => {
+  const arrayOfTime = doctor.practice.map(eachDay => {
     return [eachDay.start, eachDay.end]
   })
-  console.log(arrayOfTime);
   const [tableHead, setTableHead] = useState(["days", "start", "end"])
   const [tableTitle, setTableTitle] = useState(arrayOfDays)
   const [tableData, setTableData] = useState(arrayOfTime)
-
-  // function goToFormMakeAppointment() {
-  //   navigation.navigate('AppointmentForm', dummyDoctor)
-  // }
 
   return (
     <View style={styles.container}>
@@ -57,16 +52,9 @@ export default function AccordionView(props) {
             }}>
             </View>
       <ScrollView
-        // contentContainerStyle={{ paddingTop: 30,  }}
         vertical
         showsVerticalScrollIndicator={false}
       >
-
-        {/* <TouchableOpacity onPress={toggleExpanded}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>open</Text>
-          </View>
-        </TouchableOpacity> */}
         <View
           style={{
             flexDirection: "column",
@@ -82,7 +70,7 @@ export default function AccordionView(props) {
           <View>
             <Avatar.Image size={150} source={require(`../src/images/doctor0.jpeg`)} />
           </View>
-          <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>Dr. {dummyDoctor.name}</Text>
+          <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>Dr. {doctor.name}</Text>
 
           <View>
             <Text style={{
@@ -92,17 +80,16 @@ export default function AccordionView(props) {
               Speciality:
               </Text>
             {
-              dummyDoctor.speciality.map(eachSpeciality => {
+              doctor.speciality.map(eachSpeciality => {
                 return <SpecialityCard eachSpeciality={eachSpeciality} key={eachSpeciality}></SpecialityCard>
               })
             }
           </View>
 
-
           <Button
             mode="contained"
             icon="check-circle"
-            onPress={()=> navigation.navigate('AppointmentForm', dummyDoctor)}
+            onPress={()=> navigation.navigate('AppointmentForm', doctor)}
             style={{
               marginHorizontal: 20,
               marginTop: 20,
@@ -111,10 +98,8 @@ export default function AccordionView(props) {
             width={300}
             color='white'
           >
-            Choose Dr. {dummyDoctor.name}
+            Choose Dr. {doctor.name}
           </Button>
-
-
 
           <View style={{
             marginTop: 0,
@@ -125,7 +110,7 @@ export default function AccordionView(props) {
             backgroundColor: '#c1e8da',
           }}>
             <View style={styles.toggleContainer}>
-              <Text style={styles.toggleTitle}>See Dr. {dummyDoctor.name}'s Schedule</Text>
+              <Text style={styles.toggleTitle}>Dr. {doctor.name}'s Schedule</Text>
               <Switch
                 value={!collapsed}
                 onValueChange={toggleExpanded}
@@ -173,42 +158,22 @@ export default function AccordionView(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: 'red',
-    // height: 380,
     marginTop: 20,
     alignItems: 'center',
     marginBottom: 30
   },
-  // header: {
-  //   backgroundColor: 'blue',
-  //   padding: 10,
-  // },
-  // headerText: {
-  //   backgroundColor: 'grey',
-  //   textAlign: 'center',
-  //   fontSize: 16,
-  //   fontWeight: '500',
-  //   backgroundColor: "red",
-  //   borderRadius: 20
-  // },
   content: {
     padding: 20,
-    // backgroundColor: 'green',
     backgroundColor: "white",
     borderRadius: 20,
-    // borderBottomLeftRadius: 20,
-    // borderBottomRightRadius: 20
   },
 
   toggleContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    // marginVertical: 10,
     alignItems: 'center',
     height: 40,
     width: 300,
-
-    // borderRadius: 30
   },
   toggleTitle: {
     fontSize: 12,

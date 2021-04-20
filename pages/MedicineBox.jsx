@@ -1,89 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, ScrollView, View, ImageBackground, Image } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
-import { asyncFetchMeds } from '../store/actions'
+import { dispatchMedsFromCache, asyncFetchMeds } from '../store/actions'
+import { useIsFocused } from '@react-navigation/native'
 import {
   useFonts,
   PassionOne_400Regular
 } from '@expo-google-fonts/dev'
 import MedCard from '../components/MedCard'
-const axios = require('axios')
 
 
-export default function Doctors() {
+export default function Doctors( { navigation } ) {
+  const isFocused = useIsFocused()
   const dispatch = useDispatch()
-  // const medicines = useSelector(state => state.medicineReducer.medicines)
+  const medicines = useSelector(state => state.medicineReducer.medicines)
+  // const [medicines, setMedicines] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
+  
+  useEffect(() => {
+    console.log(medicines, '<<<<<<<<<<<, medicines dari useeffect medbox')
+    console.log('masuk useeffect');
+  }, [isFocused])
+
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
   }
-
-
-  const medicines = [
-    {
-      "medicine": {
-        "id": "1",
-        "name": "panadol",
-        "description": "sakit kepala"
-      },
-      "timesPerDay": 2,
-      "doses": 3,
-      "totalMedicine": 9
-    },
-    {
-      "medicine": {
-        "id": "2",
-        "name": "nusantara",
-        "description": "vaksin covid juga"
-      },
-      "timesPerDay": 2,
-      "doses": 3,
-      "totalMedicine": 7
-    },
-    {
-      "medicine": {
-        "id": "3",
-        "name": "pfizer",
-        "description": "vaksin covid"
-      },
-      "timesPerDay": 2,
-      "doses": 3,
-      "totalMedicine": 3
-    },
-    {
-      "medicine": {
-        "id": "4",
-        "name": "panadol",
-        "description": "sakit kepala"
-      },
-      "timesPerDay": 2,
-      "doses": 3,
-      "totalMedicine": 9
-    },
-    {
-      "medicine": {
-        "id": "5",
-        "name": "nusantara",
-        "description": "vaksin covid juga"
-      },
-      "timesPerDay": 2,
-      "doses": 3,
-      "totalMedicine": 7
-    },
-    {
-      "medicine": {
-        "id": "6",
-        "name": "pfizer",
-        "description": "vaksin covid"
-      },
-      "timesPerDay": 2,
-      "doses": 3,
-      "totalMedicine": 3
-    }
-  ]
 
   return (
     <View style={{
@@ -127,11 +71,11 @@ export default function Doctors() {
             return <MedCard
               key={Math.random()}
               name={med.medicine.name}
-              totalMed={med.totalMedicine}
+              totalMed ={med.totalMedicine}
               alarm={med.alarms}
               timesPerDay={med.timesPerDay}
               doses={med.doses}
-            />
+              />              
           })}
         </ScrollView>
       </ImageBackground>
@@ -150,7 +94,7 @@ const styles = StyleSheet.create({
 
   topCont: {
     paddingHorizontal: 30,
-    marginTop: 200,
+    marginTop: 230,
     marginRight: -10
   },
   title: {

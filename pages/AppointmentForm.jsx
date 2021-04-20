@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { StyleSheet, Text, ScrollView, View, ImageBackground, Image, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput, Button, Avatar } from 'react-native-paper'
@@ -7,14 +7,35 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import SpecialityCard from "../components/SpecialityCard"
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IconAnt from 'react-native-vector-icons/AntDesign'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { asyncNewAppointment } from '../store/actions'
+import { useDispatch } from 'react-redux'
 
 export default function AppointmentForm(props) {
-    console.log(props, "<<< props dummy doctor");
+    const dispatch = useDispatch()
     const { practice, speciality, name, id } = props.route.params
     const [appointmentDate, setAppointmentDate] = useState('')
-
-
+    const [appointmentDateToPass, setAppointmentDateToPass] = useState('')
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [practiceDays, setPracticeDays] = useState('')
+    const [comorbid, setComorbid] = useState('')
+    const [userData, setUserData] = useState('')
+
+    useEffect(async () => {
+        let tempArr = []
+        practice.forEach(details => tempArr.push(details.day))
+        setPracticeDays(tempArr)
+        const cache = JSON.parse(await AsyncStorage.getItem('user-data'))
+        setUserData(cache)
+        let temp = ''
+        const contoh = cache.account.comorbid.join(',')
+        setComorbid(contoh)
+    }, [])
+
+    useEffect(() => {
+        // const day = new Date(appointmentDate).getDate()
+        // console.log(day, '<<<< appointment date choosen');
+    }, [appointmentDate])
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -24,11 +45,54 @@ export default function AppointmentForm(props) {
         setDatePickerVisibility(false);
     };
 
-    const handleConfirm = (date) => {
-        console.log(typeof date, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        setAppointmentDate(date);
-        console.log(appointmentDate, '<<< apointmen date');
-        hideDatePicker();
+    const handleConfirm = (value) => {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        // console.log(timeZone, '<<< timezone');
+        const date = new Date(value).toLocaleString('en-US', {timeZone})
+        // console.log(date, '<<< date after formated with timezone');
+        const day = new Date(String(date)).getDay()
+        let theDay = ''
+        switch (day) {
+            case 0:
+                theDay = 'Sunday'
+                break;
+            case 1:
+                theDay = 'Monday'
+                break;
+            case 2:
+                theDay = 'Tuesday'
+                break;
+            case 3:
+                theDay = 'Wednesday'
+                break;
+            case 4:
+                theDay = 'Thursday'
+                break;
+            case 5:
+                theDay = 'Friday'
+                break;
+            case 6:
+                theDay = 'Saturday'
+                break;
+        }
+        let validator = false
+        practiceDays.forEach(day => {
+            if (day.toLowerCase() === theDay.toLowerCase()) validator = true
+        })
+        if (validator) {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const month = monthNames[value.getMonth()]
+            const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
+            const dateToPass = new Date(`${value.getDate()} ${month} ${value.getFullYear()} 12:12:12`)
+            // console.log(`${value.getDate()} ${month} ${value.getFullYear()} ini adalah appointment date`);
+            // const dateToPass = new Date(date)
+            setAppointmentDateToPass(new Date(dateToPass));
+            setAppointmentDate(newFormat)
+            hideDatePicker();
+        } else {
+            alert('doctor is not available on that day')
+        }
+
     };
 
 
@@ -122,7 +186,7 @@ export default function AppointmentForm(props) {
                     underlineColor="white"
                     label="Comorbid"
                     returnKeyType="next"
-                    // value={email}
+                    value={comorbid}
                     // onChangeText={emailInput => setEmail(emailInput)}
                     autoCompleteType="email"
                     textContentType="emailAddress"
@@ -135,49 +199,6 @@ export default function AppointmentForm(props) {
                     flexDirection: "row",
                     alignItems: 'center',
                     marginHorizontal: 40,
-                    backgroundColor: 'white',
-                    borderBottomWidth: 1,
-                    borderColor: "#0ec7a8",
-                }}>
-                <Icon
-                    name="disease"
-                    size={32}
-                    color="#0ec7a8"
-                    style={{
-                        paddingHorizontal: 10,
-                    }}
-                />
-
-                <TextInput
-                    style={{
-                        height: 50,
-                        width: 230,
-                        backgroundColor: "white",
-                        borderTopLeftRadius: 0,
-                        borderTopRightRadius: 0,
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0
-                    }}
-                    underlineColor="white"
-                    label="Disease"
-                    returnKeyType="next"
-                    // value={email}
-                    // onChangeText={emailInput => setEmail(emailInput)}
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
-                />
-            </View>
-
-            <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: 'center',
-                    marginHorizontal: 40,
-                    // backgroundColor: 'red',
-                    // borderRadius: 10,
-                    // borderTopLeftRadius: 20,
-                    // borderTopRightRadius: 20,
                     marginBottom: 20,
                     backgroundColor: 'white',
                     borderBottomWidth: 1,
@@ -210,6 +231,7 @@ export default function AppointmentForm(props) {
                     value={JSON.parse(JSON.stringify(appointmentDate)).split('T')[0]}
                     autoCompleteType="email"
                     textContentType="emailAddress"
+                    onTouchStart={showDatePicker}
                     keyboardType="email-address"
                     disabled={true}
                 />
@@ -219,7 +241,7 @@ export default function AppointmentForm(props) {
                     onConfirm={handleConfirm}
                     onCancel={hideDatePicker}
                 />
-                <Ionicons
+                {/* <Ionicons
                     name="calendar"
                     size={32}
                     color="white"
@@ -235,7 +257,7 @@ export default function AppointmentForm(props) {
                         // justifyContent: 'flex-end'
                     }}
                     onPress={showDatePicker}
-                />
+                /> */}
             </View>
 
 
@@ -270,6 +292,23 @@ export default function AppointmentForm(props) {
                     marginBottom: 20
                 }}
                 color='#0ec7a8'
+                onPress={ async () => {
+                    const obj = {
+                        access_token : userData.access_token,
+                        doctorId: id,
+                        appointmentDate: appointmentDateToPass
+                    }
+                    try {
+                        console.log(obj, '<<<< argument to pass');
+                        const create = await dispatch(asyncNewAppointment(obj))
+                        console.log(create, '<<<< create');
+                        alert('Appointment created!')
+                        props.navigation.navigate('Home')
+                    } catch (error) {
+                        console.log('failed');
+                        console.log(error);
+                    }
+                }}
             >
                 Make Appointment
           </Button>

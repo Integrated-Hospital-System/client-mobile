@@ -5,13 +5,21 @@ import { Button, TextInput } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { signIn } from '../store/actions'
+import { useDispatch } from 'react-redux';
 const axios = require('axios')
 
 export default function SignIn(props) {
+    const dispatch = useDispatch()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [alertFailLogin, setAlertFailLogin] = useState(false)
 
+    useEffect(async () => {
+        const cachenow = await AsyncStorage.setItem('user-data', '')
+        console.log(cachenow, '<<<<< cache at sign in page');
+        console.log('masuk sign in pertama kali')
+    }, [])
 
     // async function tesAsync(){
     //     console.log(await AsyncStorage.setItem('tes_key', "tes valueeeeeee"), '<< set async' )
@@ -20,33 +28,45 @@ export default function SignIn(props) {
     // }
     // tesAsync()
 
-    const onSubmitLogin = () => {
+    const onSubmitLogin = async () => {
         // check email dan passwordnya kalo bener masukin di cache
-        axios({
-            url: "https://localhost:3001/accounts",
-            method: "get",
-        })
-        .then(response=>{
-            const userData = response.data.map(data=>data.email === email)
-            if (userData.password === password) {
-                console.log(response.data,'<<< masuk');
-                async (userData) => {
-                    try {
-                      await AsyncStorage.setItem('user-data', userData)
-                      props.navigation.replace('Home');
-                    } catch (e) {
-                        console.log(e);
-                      // saving error
-                    }
-                  }
+        const response = await dispatch(signIn({email, password}))
+        const userData = response.data
+        if (userData.account.email === email) {
+            try {
+                await AsyncStorage.setItem('user-data', JSON.stringify(userData, null, 2))
+                setEmail('')
+                setPassword('')
+                props.navigation.navigate('Home');
+            } catch (error) {
+                console.log(error);
             }
-            else {
-                setAlertFailLogin(true)
-            }
-        })
-        .catch(err=>{
-            console.log(err);
-        })
+        }
+        // axios({
+        //     url: "https://localhost:3001/accounts",
+        //     method: "get",
+        // })
+        // .then(response=>{
+        //     const userData = response.data.map(data=>data.email === email)
+        //     if (userData.password === password) {
+        //         console.log(response.data,'<<< masuk');
+        //         async (userData) => {
+        //             try {
+        //               await AsyncStorage.setItem('user-data', userData)
+        //               props.navigation.replace('Home');
+        //             } catch (e) {
+        //                 console.log(e);
+        //               // saving error
+        //             }
+        //           }
+        //     }
+        //     else {
+        //         setAlertFailLogin(true)
+        //     }
+        // })
+        // .catch(err=>{
+        //     console.log(err);
+        // })
     };
 
     return (
@@ -108,8 +128,6 @@ export default function SignIn(props) {
                     backgroundColor: 'white',
                     borderBottomWidth: 1,
                     borderColor: "#0ec7a8",
-                    // borderBottomLeftRadius: 20,
-                    // borderBottomRightRadius: 20
                 }}>
                 <Ionicons
                     name="key"
@@ -179,16 +197,10 @@ export default function SignIn(props) {
                 message="Wrong Email or Password"
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
-                // showCancelButton={true}
                 showConfirmButton={true}
-                // cancelText="No, cancel"
                 confirmText=" ok "
                 confirmButtonColor="#0ec7a8"
-                // onCancelPressed={() => {
-                //     setAlertFailLogin(false)
-                // }}
                 onConfirmPressed={() => {
-                    // do something adn close alertnya
                     setAlertFailLogin(false)
                 }}
             />
@@ -199,9 +211,7 @@ export default function SignIn(props) {
 const styles = StyleSheet.create({
     signInContainer: {
         flex: 1,
-        // justifyContent: 'center',
         backgroundColor: 'white',
-        // height: 100%,
         paddingTop: 50
     },
     helloText: {
