@@ -45,7 +45,10 @@ export default function DocCard(props) {
       name="trash-2"
       size={20}
       style={{marginRight: 20}}
-      onPress={() => {deleteMed(name)}}
+      onPress={() => {
+        console.log(name);
+        deleteMed(name)
+      }}
       />
     </View>
   )
@@ -56,10 +59,11 @@ export default function DocCard(props) {
   }, [isFocused])
 
 
-  function deleteMed (name) {
-    const deleted = medicines.filter(med => med.medicine.name !== name)
-    dispatch(deleteMed(deleted))
-    console.log(medicines, '<<< medicines');
+  const deleteMed = (name) => {
+    const afterDeleted = medicines.filter(med => med.medicine.name !== name)
+    console.log(afterDeleted, '<<< after delete')
+    // dispatch(deleteMed(afterDeleted))
+    // console.log(medicines, '<<< medicines');
   }
 
   // functions for push notification starts here

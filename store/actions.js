@@ -327,7 +327,9 @@ export const dispatchMedsFromCache = () => (dispatch) => {
 }
 
 export const deleteMed = (newMeds) => async (dispatch) => {
-  dispatch({type: 'medicine/fetch', payload: newMeds})
+  console.log(newMeds, '<<<< payload dari actions');
+  return true
+  // dispatch({type: 'medicine/fetch', payload: newMeds})
 }
 
 export const asyncNewAppointment = (obj) => async (dispatch) => {

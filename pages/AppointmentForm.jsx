@@ -47,7 +47,9 @@ export default function AppointmentForm(props) {
 
     const handleConfirm = (value) => {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        console.log(timeZone, '<<< timezone');
         const date = new Date(value).toLocaleString('en-US', {timeZone})
+        console.log(date, '<<< date after formated with timezone');
         const dateToPass = new Date(date)
         const day = new Date(String(date)).getDay()
         let theDay = ''
