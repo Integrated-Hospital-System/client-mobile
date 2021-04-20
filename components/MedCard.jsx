@@ -1,4 +1,4 @@
-//set interval, set alarm time, const alarm list, alarm list di render, gw comment dulu 
+//set interval, set alarm time, const alarm list, alarm list di render, gw comment duluuuu
 
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
