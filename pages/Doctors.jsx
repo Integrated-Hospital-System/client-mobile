@@ -22,7 +22,6 @@ export default function Doctors() {
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
   }
-  
   return (
     <View
       style={{
@@ -86,7 +85,7 @@ export default function Doctors() {
           </View>
           {
             doctors.map(doctor => {
-              return <AccordionView doctor={doctor} key={doctor.id} />
+              return <AccordionView doctor={doctor} key={doctor._id} />
             })
           }
 

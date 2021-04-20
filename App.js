@@ -18,15 +18,11 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import Confimation from './pages/Confirmation'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Drawer = createDrawerNavigator()
 
 
-export default async function App() {
-  
-  const userDataCache = await AsyncStorage.getItem('user-data')
-  console.log(userDataCache, '<<<< dari app.js');
+export default function App() {  
   let [fontsLoaded] = useFonts({
     'coolvetica-rg': require('./assets/fonts/coolvetica-rg.ttf'),
     'coolvetica-condensed-rg': require('./assets/fonts/coolvetica-condensed-rg.ttf')
