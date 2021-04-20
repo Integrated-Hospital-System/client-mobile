@@ -34,7 +34,7 @@ export default function Homepage({navigation}) {
     getData()
   }, [])
 
-  if (!cache) return (<Text>Loading...</Text>)
+  // if (!cache) return (<Text>Loading...</Text>)
 
   return (
     <ScrollView
@@ -44,8 +44,8 @@ export default function Homepage({navigation}) {
 
         <View style={styles.topContainer}>
           <Text style={styles.welcomeText}>Welcome Back!</Text>
-          <Text style={styles.nameText}>{cache.account.name}</Text>
-          <Text style={styles.emailText}>{cache.account.email}</Text>
+          {/* <Text style={styles.nameText}>{cache.account.name}</Text>
+          <Text style={styles.emailText}>{cache.account.email}</Text> */}
         </View>
         <Text style={{
           textAlign: 'center',

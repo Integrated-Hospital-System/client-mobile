@@ -56,7 +56,7 @@ export default function SetAlarm({route, navigation}) {
     hour < 10 ? hours = '0' + hour : hours = hour
     setTime(`${hours}:${minutes}`)
     tempAlarm[indexToEdit] = `${hours}:${minutes}`
-    // alarm[indexToEdit] = `${hours}:${minutes}`
+        // alarm[indexToEdit] = `${hours}:${minutes}`
     hideDatePicker();
   };
 

@@ -1,4 +1,6 @@
-import React, {useState, useEffect, useRef} from 'react';
+//useEffect,medicinesstate, useSelector, home line 37,47,48
+
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, ScrollView, View, ImageBackground, Image } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { dispatchMedsFromCache, asyncFetchMeds } from '../store/actions'
@@ -10,20 +12,58 @@ import {
 import MedCard from '../components/MedCard'
 
 
-export default function Doctors( { navigation } ) {
+export default function Doctors({ navigation }) {
   const isFocused = useIsFocused()
   const dispatch = useDispatch()
-  const medicines = useSelector(state => state.medicineReducer.medicines)
+  // const medicines = useSelector(state => state.medicineReducer.medicines)
   // const [medicines, setMedicines] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
-  
-  useEffect(() => {
-    console.log(medicines, '<<<<<<<<<<<, medicines dari useeffect medbox')
-    console.log('masuk useeffect');
-  }, [isFocused])
+
+  // useEffect(() => {
+  //   console.log(medicines, '<<<<<<<<<<<, medicines dari useeffect medbox')
+  //   console.log('masuk useeffect');
+  // }, [isFocused])
+  const medicines = [
+    {
+      medicine: {
+        "id": "1",
+        "name": "panadol",
+        "description": "sakit kepala",
+        "stock": 900
+      },
+      totalMed : 10,
+      alarm:"--:--",
+      timesPerDay:1,
+      doses:2,
+    },
+    {
+      medicine: {
+        "id": "1",
+        "name": "panad1l",
+        "description": "sakit ",
+        "stock": 90
+      },
+      totalMed : 14,
+      alarm:"--:--",
+      timesPerDay:1,
+      doses:3,
+    },
+    {
+      medicine: {
+        "id": "1",
+        "name": "panadul",
+        "description": " kepala",
+        "stock": 9
+      },
+      totalMed : 19,
+      alarm:"--:--",
+      timesPerDay:1,
+      doses:5,
+    }
+  ]
 
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
@@ -37,7 +77,7 @@ export default function Doctors( { navigation } ) {
         style={{
           width: "100%",
           height: '100%',
-          backgroundColor: '#79d9c3', 
+          backgroundColor: '#79d9c3',
           shadowOffset: {
             width: 100,
             height: -100
@@ -71,11 +111,11 @@ export default function Doctors( { navigation } ) {
             return <MedCard
               key={Math.random()}
               name={med.medicine.name}
-              totalMed ={med.totalMedicine}
+              totalMed={med.totalMedicine}
               alarm={med.alarms}
               timesPerDay={med.timesPerDay}
               doses={med.doses}
-              />              
+            />
           })}
         </ScrollView>
       </ImageBackground>
