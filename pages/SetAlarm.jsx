@@ -120,7 +120,7 @@ export default function SetAlarm({route, navigation}) {
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
             />
-            {alarm.map((oneAlarm, index) => {
+            {tempAlarm.map((oneAlarm, index) => {
               return (
                 <View style={{
                   flexDirection: "row",
@@ -129,8 +129,6 @@ export default function SetAlarm({route, navigation}) {
                   backgroundColor: 'white',
                   borderBottomWidth: 1,
                   borderColor: "#0ec7a8",
-                  // borderTopLeftRadius: 20,
-                  // borderTopRightRadius: 20
               }}>
                   <IconFA
                   name="check-square-o"

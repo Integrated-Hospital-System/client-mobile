@@ -16,9 +16,12 @@ export default function SignIn(props) {
     const [alertFailLogin, setAlertFailLogin] = useState(false)
 
     useEffect(async () => {
-        const cachenow = await AsyncStorage.setItem('user-data', '')
-        console.log(cachenow, '<<<<< cache at sign in page');
-        console.log('masuk sign in pertama kali')
+        const checkCache = async () => {
+            const cachenow = await AsyncStorage.setItem('user-data', '')
+            console.log(cachenow, '<<<<< cache at sign in page');
+            console.log('masuk sign in pertama kali')
+        }
+        checkCache()
     }, [])
 
     // async function tesAsync(){

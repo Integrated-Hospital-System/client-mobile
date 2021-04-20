@@ -102,6 +102,9 @@ export default function Doctors({ navigation }) {
               borderWidth:2
             }}
             color='#0ec7a8'
+            onPress={() => {
+              navi
+            }}
           >
             No
           </Button>

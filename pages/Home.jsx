@@ -11,12 +11,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Homepage({navigation}) {
   const [cache, setCache] = useState('')
   const dispatch = useDispatch()
-  const medicines = useSelector(state => state.medicineReducer.medicines)
-  const doctors = useSelector(state => state.doctorReducer.doctors)
+  
+  // const medicines = useSelector(state => state.medicineReducer.medicines)
+  // const doctors = useSelector(state => state.doctorReducer.doctors)
   useEffect(() => {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())
-    console.log(doctors, '<<< doctors');
+    // console.log(medicines, '<<< medicines');
+    // console.log(doctors, '<<< doctors');
   }, [])
   const userData = null
 
@@ -25,9 +27,11 @@ export default function Homepage({navigation}) {
       const value = await AsyncStorage.getItem('user-data')
       if(value !== null) {
         setCache(JSON.parse(value))
+        console.log(cache, '<<<<< cache di home');
       }
     } catch(e) {
       console.log(e);
+      navigation.navigate('SignIn')
     }
   }
   useEffect(() => {

@@ -25,6 +25,7 @@ export const signIn = (signInData) => async (dispatch) => {
 }
 
 export const asyncFetchDoctors = () => async (dispatch) => {
+    console.log('masuk asyncFetchDoctors')
     const dummyDoctors = [
       {
         "id": "2",
@@ -84,21 +85,15 @@ export const asyncFetchDoctors = () => async (dispatch) => {
         ]
       }
     ]
-    dispatch({type: 'doctor/fetch', payload: dummyDoctors})
-    // const userData = await AsyncStorage.getItem('user-data')
-    // const parsed = JSON.parse(userData)
-    // console.log('masuk asyncFetchDoctors');
-    // try {
-    //   const {data} = await axios.get('/accounts', {
-    //       headers : {
-    //           access_token : parsed.access_token
-    //       }
-    //   })
-    //   const filtered = data.filter(account => account.role === 'doctor')
-      // dispatch({type: 'doctor/fetch', payload: filtered})
-    // } catch (error) {
-        // console.log(error, '<<< error try catch')
-    // }
+    const cache = await AsyncStorage.getItem('user-data')
+    const {access_token} = JSON.parse(cache)
+    const {data} = await axios.get('/accounts?role=Doctor', {
+      headers: {
+        access_token
+      }
+    })
+    
+    dispatch({type: 'doctor/fetch', payload: data})
 }
 
 export const updateAlarm =  (name, params, original) => (dispatch) => {
@@ -112,10 +107,8 @@ export const updateAlarm =  (name, params, original) => (dispatch) => {
 }
 
 export const asyncFetchMeds = () => async (dispatch) => {
-    const userData = await AsyncStorage.getItem('user-data')
-    const parsed = JSON.parse(userData)
+
     console.log('masuk asyncFetchMeds');
-    // console.log(parsed.access_token, '<<< access_token dari async storage');
     const dummy = [
         {
           "id": "1",
@@ -252,60 +245,51 @@ export const asyncFetchMeds = () => async (dispatch) => {
           ]
         }
       ]
-         try {
-            let temp = []
-            for (let i = 0; i < dummy[0].medicines.length; i++) {
-              const med = dummy[0].medicines[i]
-              for (let j = 1; j < dummy.length; j++) {
-                const med2 = dummy[j].medicines
-                for (let l = 0; l < med2.length; l++) {
-                  const medToCompare = dummy[j].medicines[l]
-                  if (med.medicine.name === medToCompare.medicine.name) {
-                    // console.log(medToCompare.medicine.name, '<<< sama')
-                    med.totalMedicine += medToCompare.totalMedicine
-                  }
-                }
-              }
-              for (let i = 0; i < med.timesPerDay; i++) {
-                if (!med.alarms) {
-                  med.alarms = []
-                }
-                med.alarms.push('--:--')
-              }
-              temp.push(med)
+    try {
+      let temp = []
+      for (let i = 0; i < dummy[0].medicines.length; i++) {
+        const med = dummy[0].medicines[i]
+        for (let j = 1; j < dummy.length; j++) {
+          const med2 = dummy[j].medicines
+          for (let l = 0; l < med2.length; l++) {
+            const medToCompare = dummy[j].medicines[l]
+            if (med.medicine.name === medToCompare.medicine.name) {
+              // console.log(medToCompare.medicine.name, '<<< sama')
+              med.totalMedicine += medToCompare.totalMedicine
             }
-            dispatch({type: 'medicine/fetch', payload: temp})
-        } catch (error) {
-            console.log(error, '<<< error try catch')
+          }
         }
-    // console.log('masuk asyncFetchMeds');
-    // return async (dispatch) => {
-    //     try {
-    //         const {data} = await axios({
-    //             url: 'http://localhost:3001/orders',
-    //             method: 'get'
-    //         })
-    //         const filtered = data.filter(order => (order.appointment.patient.id === '5'))
-    //         const filteredMeds = filtered.map(order => {
-    //             return order.medicines
-    //         })
-    //         let temp = []
-    //         // console.log(filteredMeds[0][1].timesPerDay, '<<< timesPerDay');
-    //         for (let i = 0; i < filteredMeds[0].length; i++) {
-    //             for (let j = 0; j < filteredMeds[0][i].timesPerDay; j++) {
-    //                 temp.push('--:--')
-    //                 if (j === filteredMeds[0][i].timesPerDay - 1 ) {
-    //                     filteredMeds[0][i].alarm = temp
-    //                     temp = []
-    //                     break
-    //                 }
-    //             }
-    //         }
-    //         dispatch({type: 'medicine/fetch', payload: filteredMeds[0]})
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+        for (let i = 0; i < med.timesPerDay; i++) {
+          if (!med.alarms) {
+            med.alarms = []
+          }
+          med.alarms.push('--:--')
+        }
+        temp.push(med)
+      }
+
+      const cache = await AsyncStorage.getItem('user-data')
+      const {access_token} = JSON.parse(cache)
+      console.log(access_token, '<<< access');
+      const {data} = await axios.get('/orders', {
+        headers: {
+          access_token
+        }
+      })
+
+      data.forEach(order => {
+        console.log(order.medicines, '<<<<< medicines tiap order');
+      })
+
+
+
+
+
+
+      dispatch({type: 'medicine/fetch', payload: temp})
+  } catch (error) {
+      console.log(error, '<<< error try catch')
+  }
 }
 
 export const dispatchMedsFromCache = () => (dispatch) => {
@@ -326,25 +310,25 @@ export const dispatchMedsFromCache = () => (dispatch) => {
   return object
 }
 
-export const deleteMed = (newMeds) => async (dispatch) => {
-  console.log(newMeds, '<<<< payload dari actions');
-  return true
-  // dispatch({type: 'medicine/fetch', payload: newMeds})
+export const deleteMed = (deletedMedName) => {
+  console.log('masuk action deleteMed');
+  return ({type: 'medicine/delete', payload: deletedMedName})
 }
 
 export const asyncNewAppointment = (obj) => async (dispatch) => {
-  const {id, appointmentDate, access_token} = obj
+  const {doctorId, appointmentDate, access_token} = obj
   console.log(access_token, '<<< access_token');
   try {
-    const respose = await axios.post('/appointments', {
-      doctorId: id,
+    const response = await axios.post('/appointments', {
+      // doctorId: '607efb50646cb091b2836594',
+      doctorId,
       appointmentDate
     }, {
       headers: {
         access_token
       }
     })
-    return respose
+    return response
   } catch (error) {
     return error
   }

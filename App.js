@@ -22,13 +22,11 @@ import Confimation from './pages/Confirmation'
 const Drawer = createDrawerNavigator()
 
 
-export default function App() {
-  
-  
-    let [fontsLoaded] = useFonts({
-      'coolvetica-rg': require('./assets/fonts/coolvetica-rg.ttf'),
-      'coolvetica-condensed-rg': require('./assets/fonts/coolvetica-condensed-rg.ttf')
-    });
+export default function App() {  
+  let [fontsLoaded] = useFonts({
+    'coolvetica-rg': require('./assets/fonts/coolvetica-rg.ttf'),
+    'coolvetica-condensed-rg': require('./assets/fonts/coolvetica-condensed-rg.ttf')
+  });
 
   if(!fontsLoaded){
     return <AppLoading></AppLoading>
@@ -38,7 +36,7 @@ export default function App() {
     <PaperProvider>
       <Provider store={store}>
         <NavigationContainer>
-          <Drawer.Navigator initialRouteName="Confirmation" drawerContent={(props) => <DrawerContent {...props} />}>
+          <Drawer.Navigator initialRouteName="SignIn" drawerContent={(props) => <DrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="MaMed" component={MaMed} />
             <Drawer.Screen name="Doctors" component={Doctors} />

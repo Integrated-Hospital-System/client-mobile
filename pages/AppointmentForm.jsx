@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux'
 
 export default function AppointmentForm(props) {
     const dispatch = useDispatch()
-    const { practice, speciality, name, id } = props.route.params
+    const { practice, speciality, name, _id } = props.route.params
     const [appointmentDate, setAppointmentDate] = useState('')
     const [appointmentDateToPass, setAppointmentDateToPass] = useState('')
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -21,15 +21,18 @@ export default function AppointmentForm(props) {
     const [comorbid, setComorbid] = useState('')
     const [userData, setUserData] = useState('')
 
-    useEffect(async () => {
-        let tempArr = []
-        practice.forEach(details => tempArr.push(details.day))
-        setPracticeDays(tempArr)
-        const cache = JSON.parse(await AsyncStorage.getItem('user-data'))
-        setUserData(cache)
-        let temp = ''
-        const contoh = cache.account.comorbid.join(',')
-        setComorbid(contoh)
+    useEffect(() => {
+        const getDetail = async () => {
+            let tempArr = []
+            practice.forEach(details => tempArr.push(details.day))
+            setPracticeDays(tempArr)
+            const cache = JSON.parse(await AsyncStorage.getItem('user-data'))
+            setUserData(cache)
+            let temp = ''
+            const contoh = cache.account.comorbid.join(',')
+            setComorbid(contoh)
+        }
+        getDetail()
     }, [])
 
     useEffect(() => {
@@ -46,6 +49,7 @@ export default function AppointmentForm(props) {
     };
 
     const handleConfirm = (value) => {
+        console.log(value, '<<<<< value');
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
         // console.log(timeZone, '<<< timezone');
         const date = new Date(value).toLocaleString('en-US', {timeZone})
@@ -295,14 +299,16 @@ export default function AppointmentForm(props) {
                 onPress={ async () => {
                     const obj = {
                         access_token : userData.access_token,
-                        doctorId: id,
+                        doctorId: _id,
                         appointmentDate: appointmentDateToPass
                     }
                     try {
                         console.log(obj, '<<<< argument to pass');
                         const create = await dispatch(asyncNewAppointment(obj))
-                        console.log(create, '<<<< create');
+                        // console.log(create, '<<<< create');
                         alert('Appointment created!')
+                        setAppointmentDate('')
+                        setAppointmentDateToPass('')
                         props.navigation.navigate('Home')
                     } catch (error) {
                         console.log('failed');
