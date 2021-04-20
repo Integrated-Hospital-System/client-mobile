@@ -82,14 +82,15 @@ export default function DocCard(props) {
   }, []);
 
   async function schedulePushNotification(param) {
-    // alert(`Boop Boop... 💊\nIt's time to take your ${name} x ${doses}`)
+    alert(`Boop Boop... 💊\nIt's time to take your ${name} x ${doses}`)
+    navigation.navigate('Confirmation', {name})
     await Notifications.scheduleNotificationAsync({
       content: ({
         title: "Boop Boop... 💊",
         body: `It's time to take your ${name} x ${doses}`,
         data: { data: 'goes here' },
       }),
-      trigger: { hour: alarmHour, minute: alarmMinutes, repeats: true },
+      trigger: { seconds: 1 },
     });
   }
 

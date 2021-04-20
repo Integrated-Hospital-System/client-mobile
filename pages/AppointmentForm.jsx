@@ -8,21 +8,25 @@ import SpecialityCard from "../components/SpecialityCard"
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { asyncNewAppointment } from '../store/actions'
+import { useDispatch } from 'react-redux'
 
 export default function AppointmentForm(props) {
+    const dispatch = useDispatch()
     const { practice, speciality, name, id } = props.route.params
     const [appointmentDate, setAppointmentDate] = useState('')
+    const [appointmentDateToPass, setAppointmentDateToPass] = useState('')
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [practiceDays, setPracticeDays] = useState('')
     const [comorbid, setComorbid] = useState('')
-    const [diseases, setDiseases] = useState('')
+    const [userData, setUserData] = useState('')
 
     useEffect(async () => {
         let tempArr = []
         practice.forEach(details => tempArr.push(details.day))
         setPracticeDays(tempArr)
         const cache = JSON.parse(await AsyncStorage.getItem('user-data'))
-        console.log(cache.account.comorbid, '<<<< cache comorbid')
+        setUserData(cache)
         let temp = ''
         const contoh = cache.account.comorbid.join(',')
         setComorbid(contoh)
@@ -44,7 +48,8 @@ export default function AppointmentForm(props) {
     const handleConfirm = (value) => {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
         const date = new Date(value).toLocaleString('en-US', {timeZone})
-        const day = new Date(date).getDay()
+        const dateToPass = new Date(date)
+        const day = new Date(String(date)).getDay()
         let theDay = ''
         switch (day) {
             case 0:
@@ -77,6 +82,7 @@ export default function AppointmentForm(props) {
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const month = monthNames[value.getMonth()]
             const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
+            setAppointmentDateToPass(new Date(newFormat));
             setAppointmentDate(newFormat)
             hideDatePicker();
         } else {
@@ -157,50 +163,6 @@ export default function AppointmentForm(props) {
                     label="Comorbid"
                     returnKeyType="next"
                     value={comorbid}
-                    // onChangeText={emailInput => setEmail(emailInput)}
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
-                />
-            </View>
-
-            <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: 'center',
-                    marginHorizontal: 40,
-                    backgroundColor: 'white',
-                    borderBottomWidth: 1,
-                    borderColor: "#0ec7a8",
-                }}>
-                <Icon
-                    name="disease"
-                    size={32}
-                    color="#0ec7a8"
-                    style={{
-                        paddingHorizontal: 10,
-                    }}
-                />
-
-                <TextInput
-                    style={{
-                        height: 50,
-                        width: 230,
-                        backgroundColor: "white",
-                        borderTopLeftRadius: 0,
-                        borderTopRightRadius: 0,
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0
-                    }}
-                    onChangeText={(value) => {
-                        console.log(value, '<<<<<< onchangetext diseases');
-                        setDiseases(value)
-                        console.log(diseases, '<<< diseases dari on change text');
-                    }}
-                    underlineColor="white"
-                    label="Disease"
-                    returnKeyType="next"
-                    // value={email}
                     // onChangeText={emailInput => setEmail(emailInput)}
                     autoCompleteType="email"
                     textContentType="emailAddress"
@@ -306,8 +268,21 @@ export default function AppointmentForm(props) {
                     marginBottom: 20
                 }}
                 color='#0ec7a8'
-                onPress={() => {
-                    console.log(diseases, comorbid, name, id, appointmentDate, '<<<<<<');
+                onPress={ async () => {
+                    const obj = {
+                        access_token : userData.access_token,
+                        doctorId: id,
+                        appointmentDate: appointmentDateToPass
+                    }
+                    try {
+                        const create = await dispatch(asyncNewAppointment(obj))
+                        console.log(create, '<<<< create');
+                        alert('Appointment created!')
+                        props.navigation.navigate('Home')
+                    } catch (error) {
+                        console.log('failed');
+                        console.log(error);
+                    }
                 }}
             >
                 Make Appointment

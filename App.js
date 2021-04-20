@@ -17,6 +17,7 @@ import AppContainer from './navigation'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
+import Confimation from './pages/Confirmation'
 
 const Drawer = createDrawerNavigator()
 
@@ -45,6 +46,7 @@ export default function App() {
             <Drawer.Screen name="SignUp" component={SignUp} />
             <Drawer.Screen name="Set Alarm" component={SetAlarm} />
             <Drawer.Screen name="AppointmentForm" component={AppointmentForm} />
+            <Drawer.Screen name="Confirmation" component={Confimation} />
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>

@@ -329,3 +329,21 @@ export const dispatchMedsFromCache = () => (dispatch) => {
 export const deleteMed = (newMeds) => async (dispatch) => {
   dispatch({type: 'medicine/fetch', payload: newMeds})
 }
+
+export const asyncNewAppointment = (obj) => async (dispatch) => {
+  const {id, appointmentDate, access_token} = obj
+  console.log(access_token, '<<< access_token');
+  try {
+    const respose = await axios.post('/appointments', {
+      doctorId: id,
+      appointmentDate
+    }, {
+      headers: {
+        access_token
+      }
+    })
+    return respose
+  } catch (error) {
+    return error
+  }
+}
