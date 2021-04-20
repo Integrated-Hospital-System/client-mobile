@@ -30,7 +30,7 @@ export default function Doctors() {
         height: Dimensions.get('window').height
       }}
     >
-      <ImageBackground source={require('../src/images/cadangan-3-edited.png')} style={{ width: "100%", height: '100%', backgroundColor: '#daf0eb' }}>
+      <ImageBackground source={require('../src/images/cadangan-3-edited.png')} style={{ width: "100%", height: '100%', backgroundColor: '#79d9c3' }}>
         <ScrollView
           vertical
         >

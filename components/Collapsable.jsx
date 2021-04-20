@@ -37,6 +37,20 @@ export default function AccordionView(props) {
 
   return (
     <View style={styles.container}>
+      <View style={{
+                width: 300,
+                height: 320,
+                position: "absolute",
+                top: 0,
+                borderTopRightRadius: 10,
+                borderTopLeftRadius: 10,
+                borderColor:'#68e8cb',
+                backgroundColor: 'white',
+                zIndex: 0,
+                opacity: 0.5
+                // marginHorizontal: 40
+            }}>
+            </View>
       <ScrollView
         vertical
         showsVerticalScrollIndicator={false}
@@ -45,7 +59,7 @@ export default function AccordionView(props) {
           style={{
             flexDirection: "column",
             width: 300,
-            marginTop: 10,
+            marginTop: 30,
             marginHorizontal: 10,
             // backgroundColor: 'grey',
             justifyContent: 'center',
@@ -82,18 +96,18 @@ export default function AccordionView(props) {
               color: "white"
             }}
             width={300}
-            color='#0ec7a8'
+            color='white'
           >
             Choose Dr. {doctor.name}
           </Button>
 
           <View style={{
-            marginTop: 10,
+            marginTop: 0,
             backgroundColor: "white",
-            borderRadius: 15,
-            borderWidth: 2,
-            borderColor: "#0ec7a8",
-            backgroundColor: '#f0fffb',
+            borderBottomRightRadius: 10,
+            borderBottomLeftRadius: 10,
+            // borderWidth: 2,
+            backgroundColor: '#c1e8da',
           }}>
             <View style={styles.toggleContainer}>
               <Text style={styles.toggleTitle}>Dr. {doctor.name}'s Schedule</Text>
@@ -162,7 +176,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   toggleTitle: {
-    fontSize: 16,
+    fontSize: 12,
     marginHorizontal: 10,
   },
   head: { height: 40, backgroundColor: '#f1f8ff' },

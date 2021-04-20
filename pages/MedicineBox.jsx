@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, ImageBackground, Image } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
-import { dispatchMedsFromCache } from '../store/actions'
+import { dispatchMedsFromCache, asyncFetchMeds } from '../store/actions'
 import { useIsFocused } from '@react-navigation/native'
 import {
   useFonts,
@@ -30,14 +30,43 @@ export default function Doctors( { navigation } ) {
   }
 
   return (
-    <>
-      <ScrollView style={styles.container}
-      horizontal
-      >
-        <View style={styles.view} >
-          <Text
-          style={{fontFamily: 'PassionOne_400Regular', fontSize: 40}}
-          >Medicine Box</Text>
+    <View style={{
+      flexDirection: 'column'
+    }}>
+      <ImageBackground source={require('../src/images/cadangan-2-edited.png')}
+        style={{
+          width: "100%",
+          height: '100%',
+          backgroundColor: '#79d9c3', 
+          shadowOffset: {
+            width: 100,
+            height: -100
+          }
+          , shadowColor: 'black'
+        }}>
+        <View style={{
+          flexDirection: 'row',
+          marginBottom: 10,
+        }}>
+          <View style={styles.topCont}>
+            <Text style={styles.title}>My Meds</Text>
+            <Text style={styles.titleNote}>Consistency is the key</Text>
+          </View>
+          <View style={{ marginTop: 200, }}>
+            {/* <Image source={require('../src/images/medicines-image.png')} style={{ width: 150, resizeMode: 'contain', height: 100, }}></Image> */}
+          </View>
+        </View>
+        <ScrollView
+          vertical
+          showsVerticalScrollIndicator={false}
+          style={{
+            // width: 100,
+            // maxHeight: 400,
+            // backgroundColor: 'red',
+            marginHorizontal: 30,
+          }}
+
+        >
           {medicines.map((med, index) => {
             return <MedCard
               key={Math.random()}
@@ -48,31 +77,36 @@ export default function Doctors( { navigation } ) {
               doses={med.doses}
               />              
           })}
-        </View>
-        <View/>
-      </ScrollView>
-    </>
+        </ScrollView>
+      </ImageBackground>
+    </View>
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
+
+  // boxMed: {
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   height: 200,
+  //   width: 300,
+  //   backgroundColor:'grey'
+  // },
+
+  topCont: {
+    paddingHorizontal: 30,
+    marginTop: 230,
+    marginRight: -10
   },
-  view: {
-    marginTop: 100,
-    flex: 5,
-    textAlign: 'center',
-    marginLeft: '8%',
-    marginRight: '8%',
-    // backgroundColor: 'blue'
+  title: {
+    fontFamily: 'coolvetica-rg',
+    fontSize: 40,
+    // color: "white",
+    color: 'black'
   },
-  card: {
-    marginTop: 20,
-    width: "100%",
-    shadowOpacity: 0.7,
-    shadowRadius: 2.5
+  titleNote: {
+    fontFamily: 'coolvetica-rg',
+    fontSize: 15,
+    color: "#4a4a4a",
+    marginBottom: 10
   }
-});
+})

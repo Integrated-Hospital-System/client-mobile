@@ -1,7 +1,9 @@
+//set interval, set alarm time, const alarm list, alarm list di render, gw comment duluuuu
+
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, ImageBackground, Image, Text } from 'react-native';
 import { Avatar, Card } from 'react-native-paper';
 import { useNavigation, Platform } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
@@ -30,7 +32,7 @@ export default function DocCard(props) {
   const parsing = JSON.parse(JSON.stringify(totalMed, null, 4))
   const [medAmmount, setMedAmmout] = useState(parsing)
   const alarmList = setAlarmTime()
-  const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="#3075b5" style={styles.avatar}/>
+  const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="white" style={styles.avatar} />
   const RightContent = props => (
     <View>
       <Icon
@@ -70,15 +72,12 @@ export default function DocCard(props) {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
     });
-
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
     });
-
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
@@ -97,7 +96,6 @@ export default function DocCard(props) {
       trigger: { seconds: 1 },
     });
   }
-
   async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {
@@ -116,7 +114,7 @@ export default function DocCard(props) {
     } else {
       alert('Must use physical device for Push Notifications');
     }
-  
+
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {
         name: 'default',
@@ -125,10 +123,9 @@ export default function DocCard(props) {
         lightColor: '#FF231F7C',
       });
     }
-  
+
     return token;
   }
-
   setInterval(() => {
     const hours = new Date().getHours()
     const minutes = new Date().getMinutes()
@@ -142,7 +139,6 @@ export default function DocCard(props) {
       }
     })
   }, 1000)
-
   // functions for push notification ends here
 
   function setAlarmTime () {
@@ -155,22 +151,34 @@ export default function DocCard(props) {
     if (validator) return temp
     else return "No alarm set"
   }
-
   return (
     <Card style={styles.card}>
-        <Card.Title title={name} subtitle={alarmList} left={LeftContent} right={RightContent} />
+        <Card.Title title={name} subtitle={alarmList} subtitleStyle={{marginLeft: 10}} titleStyle={{marginLeft: 10}} left={LeftContent} right={RightContent} />
     </Card>
-  );
+  )
 }
-
 const styles = StyleSheet.create({
+  // card: {
+  //   shadowOpacity: 0.7,
+  //   shadowRadius: 5.5,
+  //   width: 140,
+  //   height: 200,
+  //   marginTop: 80,
+  //   alignSelf: 'center',
+  //   opacity: 0.1
+  // },
   card: {
-    marginTop: 20,
+    marginBottom: 20,
     width: "100%",
-    shadowOpacity: 0.7,
-    shadowRadius: 2.5
+    shadowOpacity:1,
+    borderRadius: 40,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderColor: '#5e8275',
+    
   },
   avatar: {
-    backgroundColor: 'white'
+    backgroundColor: '#2e8760',
+
   }
 })

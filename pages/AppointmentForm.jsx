@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react'
 import { StyleSheet, Text, ScrollView, View, ImageBackground, Image, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { TextInput, Button } from 'react-native-paper'
+import { TextInput, Button, Avatar } from 'react-native-paper'
 // const DateTimePicker = require('@react-native-community/datetimepicker');
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import SpecialityCard from "../components/SpecialityCard"
@@ -47,10 +47,9 @@ export default function AppointmentForm(props) {
 
     const handleConfirm = (value) => {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        console.log(timeZone, '<<< timezone');
+        // console.log(timeZone, '<<< timezone');
         const date = new Date(value).toLocaleString('en-US', {timeZone})
-        console.log(date, '<<< date after formated with timezone');
-        const dateToPass = new Date(date)
+        // console.log(date, '<<< date after formated with timezone');
         const day = new Date(String(date)).getDay()
         let theDay = ''
         switch (day) {
@@ -84,7 +83,10 @@ export default function AppointmentForm(props) {
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const month = monthNames[value.getMonth()]
             const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
-            setAppointmentDateToPass(new Date(newFormat));
+            const dateToPass = new Date(`${value.getDate()} ${month} ${value.getFullYear()} 12:12:12`)
+            // console.log(`${value.getDate()} ${month} ${value.getFullYear()} ini adalah appointment date`);
+            // const dateToPass = new Date(date)
+            setAppointmentDateToPass(new Date(dateToPass));
             setAppointmentDate(newFormat)
             hideDatePicker();
         } else {
@@ -96,45 +98,65 @@ export default function AppointmentForm(props) {
 
     return (
         <View style={{
-            // backgroundColor: 'red'
-            marginTop: 70,
+            backgroundColor: 'white',
+            paddingTop: 80,
+            height: '100%'
         }}>
-            <Text style={{
-                fontFamily: 'coolvetica-rg',
-                marginBottom: 10,
-                alignSelf: 'center'
-            }}>Make Appointment with: </Text>
-            <View>
-                <Text style={{
-                    fontFamily: 'coolvetica-rg',
-                    fontSize: 20,
-                    textAlign: 'center'
-                    // marginBottom: 20,
-                }}>Dr. {name}</Text>
+            <View style={{
+                width: '100%',
+                height: 210,
+                position: "absolute",
+                top: 0,
+                borderBottomLeftRadius: 60,
+                borderBottomRightRadius: 60,
+                borderBottomWidth: 3,
+                // borderBottomStartRadius: 3,
+                borderColor:'#68e8cb',
+                // backgroundColor: '#68e8cb',
+                zIndex: 0
+            }}>
+            </View>
+            <View style={{
+                flexDirection: 'row',
+                alignSelf: 'center',
+            }}>
+                <View>
+                    <Avatar.Image size={100} source={require(`../src/images/doctor0.jpeg`)} style={{marginHorizontal: 10,}}/>
+                </View>
                 <View style={{
-                    marginBottom: 20,
-                    alignSelf: 'center'
+                    marginLeft: 20
                 }}>
                     <Text style={{
-                        textAlign: 'center',
-                        // fontWeight: 100
+                        fontFamily: 'coolvetica-rg',
+                        fontSize: 20,
+                        textAlign: 'left',
+                    }}>Dr. {name}</Text>
+                    <View style={{
+                        marginBottom: 20,
+                        alignSelf: 'center'
                     }}>
-                        Speciality:
+                        <Text style={{
+                            textAlign: 'left',
+                            // fontWeight: 100
+                        }}>
+                            Speciality:
                     </Text>
 
-                    {/* <View> */}
+                        {/* <View> */}
                         {
                             speciality.map(eachSpeciality => {
                                 return <SpecialityCard eachSpeciality={eachSpeciality} key={eachSpeciality}></SpecialityCard>
                             })
                         }
-                    {/* </View> */}
+                        {/* </View> */}
 
+                    </View>
                 </View>
             </View>
 
             <View
                 style={{
+                    marginTop: 60,
                     flexDirection: "row",
                     alignItems: 'center',
                     marginHorizontal: 40,
@@ -277,6 +299,7 @@ export default function AppointmentForm(props) {
                         appointmentDate: appointmentDateToPass
                     }
                     try {
+                        console.log(obj, '<<<< argument to pass');
                         const create = await dispatch(asyncNewAppointment(obj))
                         console.log(create, '<<<< create');
                         alert('Appointment created!')
@@ -289,7 +312,7 @@ export default function AppointmentForm(props) {
             >
                 Make Appointment
           </Button>
-            <Image source={require('../src/images/appointment-form-image.gif')} style={{ height: "35%", width: "65%", alignSelf: 'center', marginTop: 10 }}></Image>
+            <Image source={require('../src/images/appointment-form-image.gif')} style={{ height: "30%", width: "55%", alignSelf: 'center', marginTop: 10 }}></Image>
         </View>
     )
 }
