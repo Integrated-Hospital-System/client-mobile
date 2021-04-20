@@ -48,8 +48,8 @@ export default function DocCard(props) {
       size={20}
       style={{marginRight: 20}}
       onPress={() => {
-        console.log(name);
-        deleteMed(name)
+        // console.log(name);
+        deleteMedicine(name)
       }}
       />
     </View>
@@ -61,10 +61,10 @@ export default function DocCard(props) {
   }, [isFocused])
 
 
-  const deleteMed = (name) => {
-    const afterDeleted = medicines.filter(med => med.medicine.name !== name)
-    console.log(afterDeleted, '<<< after delete')
-    // dispatch(deleteMed(afterDeleted))
+  const deleteMedicine = (name) => {
+    // const afterDeleted = medicines.filter(med => med.medicine.name !== name)
+    // console.log(afterDeleted, '<<< after delete')
+    dispatch(deleteMed(name))
     // console.log(medicines, '<<< medicines');
   }
 
@@ -96,6 +96,7 @@ export default function DocCard(props) {
       trigger: { seconds: 1 },
     });
   }
+
   async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {

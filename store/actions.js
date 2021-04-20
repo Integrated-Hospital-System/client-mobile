@@ -326,10 +326,15 @@ export const dispatchMedsFromCache = () => (dispatch) => {
   return object
 }
 
-export const deleteMed = (newMeds) => async (dispatch) => {
-  console.log(newMeds, '<<<< payload dari actions');
-  return true
+// export const deleteMed = (deletedMedName) => async (dispatch) => {
+//   console.log(deletedMedName, '<<<< payload dari actions');
+  // return true
   // dispatch({type: 'medicine/fetch', payload: newMeds})
+// }
+
+export const deleteMed = (deletedMedName) => {
+  console.log('masuk action deleteMed');
+  return ({type: 'medicine/delete', payload: deletedMedName})
 }
 
 export const asyncNewAppointment = (obj) => async (dispatch) => {

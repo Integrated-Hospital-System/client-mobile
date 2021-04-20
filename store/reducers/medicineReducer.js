@@ -8,6 +8,9 @@ export default function doctorReducer (state = initialState, action) {
         return {...state, medicines: payload}
     } else if (type === 'alarm/update') {
         return {...state, medicines: payload}
+    } else if (type === 'medicine/delete') {
+        console.log('masuk sini')
+        return {...state, medicines: state.medicines.filter(med => med.medicine.name !== payload)}
     }
     return state
 }

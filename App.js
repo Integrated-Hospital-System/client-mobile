@@ -18,17 +18,19 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import Confimation from './pages/Confirmation'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Drawer = createDrawerNavigator()
 
 
-export default function App() {
+export default async function App() {
   
-  
-    let [fontsLoaded] = useFonts({
-      'coolvetica-rg': require('./assets/fonts/coolvetica-rg.ttf'),
-      'coolvetica-condensed-rg': require('./assets/fonts/coolvetica-condensed-rg.ttf')
-    });
+  const userDataCache = await AsyncStorage.getItem('user-data')
+  console.log(userDataCache, '<<<< dari app.js');
+  let [fontsLoaded] = useFonts({
+    'coolvetica-rg': require('./assets/fonts/coolvetica-rg.ttf'),
+    'coolvetica-condensed-rg': require('./assets/fonts/coolvetica-condensed-rg.ttf')
+  });
 
   if(!fontsLoaded){
     return <AppLoading></AppLoading>
@@ -38,7 +40,7 @@ export default function App() {
     <PaperProvider>
       <Provider store={store}>
         <NavigationContainer>
-          <Drawer.Navigator initialRouteName="Mamed" drawerContent={(props) => <DrawerContent {...props} />}>
+          <Drawer.Navigator initialRouteName="SignIn" drawerContent={(props) => <DrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="MaMed" component={MaMed} />
             <Drawer.Screen name="Doctors" component={Doctors} />
