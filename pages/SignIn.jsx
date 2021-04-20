@@ -30,6 +30,7 @@ export default function SignIn(props) {
 
     const onSubmitLogin = async () => {
         // check email dan passwordnya kalo bener masukin di cache
+        console.log('masuk sini<<<<');
         const response = await dispatch(signIn({email, password}))
         const userData = response.data
         if (userData.account.email === email) {
