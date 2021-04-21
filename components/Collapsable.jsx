@@ -70,7 +70,7 @@ export default function AccordionView(props) {
           <View>
             <Avatar.Image size={150} source={require(`../src/images/doctor0.jpeg`)} />
           </View>
-          <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>Dr. {doctor.name}</Text>
+          <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>{doctor.name}</Text>
 
           <View>
             <Text style={{
@@ -98,7 +98,7 @@ export default function AccordionView(props) {
             width={300}
             color='white'
           >
-            Choose Dr. {doctor.name}
+            Choose {doctor.name}
           </Button>
 
           <View style={{
@@ -110,7 +110,7 @@ export default function AccordionView(props) {
             backgroundColor: '#c1e8da',
           }}>
             <View style={styles.toggleContainer}>
-              <Text style={styles.toggleTitle}>Dr. {doctor.name}'s Schedule</Text>
+              <Text style={styles.toggleTitle}>{doctor.name}'s Schedule</Text>
               <Switch
                 value={!collapsed}
                 onValueChange={toggleExpanded}

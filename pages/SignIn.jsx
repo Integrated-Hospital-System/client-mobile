@@ -24,13 +24,6 @@ export default function SignIn(props) {
         checkCache()
     }, [])
 
-    // async function tesAsync(){
-    //     console.log(await AsyncStorage.setItem('tes_key', "tes valueeeeeee"), '<< set async' )
-    //     const data = console.log(await AsyncStorage.getItem('tes_key'), "<<< tes async")
-    
-    // }
-    // tesAsync()
-
     const onSubmitLogin = async () => {
         // check email dan passwordnya kalo bener masukin di cache
         console.log('masuk sini<<<<');
@@ -46,31 +39,6 @@ export default function SignIn(props) {
                 console.log(error);
             }
         }
-        // axios({
-        //     url: "https://localhost:3001/accounts",
-        //     method: "get",
-        // })
-        // .then(response=>{
-        //     const userData = response.data.map(data=>data.email === email)
-        //     if (userData.password === password) {
-        //         console.log(response.data,'<<< masuk');
-        //         async (userData) => {
-        //             try {
-        //               await AsyncStorage.setItem('user-data', userData)
-        //               props.navigation.replace('Home');
-        //             } catch (e) {
-        //                 console.log(e);
-        //               // saving error
-        //             }
-        //           }
-        //     }
-        //     else {
-        //         setAlertFailLogin(true)
-        //     }
-        // })
-        // .catch(err=>{
-        //     console.log(err);
-        // })
     };
 
     return (
