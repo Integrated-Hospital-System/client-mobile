@@ -10,6 +10,7 @@ import IconAnt from 'react-native-vector-icons/AntDesign'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { asyncNewAppointment } from '../store/actions'
 import { useDispatch } from 'react-redux'
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function AppointmentForm(props) {
     const dispatch = useDispatch()
@@ -20,6 +21,8 @@ export default function AppointmentForm(props) {
     const [practiceDays, setPracticeDays] = useState('')
     const [comorbid, setComorbid] = useState('')
     const [userData, setUserData] = useState('')
+    const [alertFailAppointment, setAlertFailAppointment] = useState(false)
+    const [alertSuccessAppointment, setAlertSuccessAppointment] = useState(false)
 
 
     useEffect(() => {
@@ -97,7 +100,8 @@ export default function AppointmentForm(props) {
                 setAppointmentDate(newFormat)
                 hideDatePicker();
             } else {
-                alert('doctor is not available on that day')
+                // alert('doctor is not available on that day')
+                setAlertFailAppointment(true)
             }
         }
         else {
@@ -147,7 +151,8 @@ export default function AppointmentForm(props) {
                 setAppointmentDate(newFormat)
                 hideDatePicker();
             } else {
-                alert('doctor is not available on that day')
+                // alert('doctor is not available on that day')
+                setAlertFailAppointment(true)
             }
         }
 
@@ -326,10 +331,12 @@ export default function AppointmentForm(props) {
                         console.log(obj, '<<<< argument to pass');
                         const create = await dispatch(asyncNewAppointment(obj))
                         // console.log(create, '<<<< create');
-                        alert('Appointment created!')
+                        
+                        // alert('Appointment created!')
+                        setAlertSuccessAppointment(true)
                         setAppointmentDate('')
                         setAppointmentDateToPass('')
-                        props.navigation.navigate('Home')
+                        // props.navigation.navigate('Home')
                     } catch (error) {
                         console.log('failed');
                         console.log(error);
@@ -339,6 +346,35 @@ export default function AppointmentForm(props) {
                 Make Appointment
           </Button>
             <Image source={require('../src/images/appointment-form-image.gif')} style={{ height: "30%", width: "55%", alignSelf: 'center', marginTop: 10 }}></Image>
+            <AwesomeAlert
+                show={alertFailAppointment}
+                showProgress={false}
+                title="Appointment Failed"
+                message={`We're sorry, ${name} is not available on that day`}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText=" ok "
+                confirmButtonColor="#0ec7a8"
+                onConfirmPressed={() => {
+                    setAlertFailAppointment(false)
+                }}
+            />
+            <AwesomeAlert
+                show={alertSuccessAppointment}
+                showProgress={false}
+                title="Appointment Success"
+                message={`Appointment with ${name} has been made`}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText=" ok "
+                confirmButtonColor="#0ec7a8"
+                onConfirmPressed={() => {
+                    setAlertSuccessAppointment(false)
+                    props.navigation.navigate('Home')
+                }}
+            />
         </View>
     )
 }
