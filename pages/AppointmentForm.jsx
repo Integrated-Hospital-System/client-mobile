@@ -53,56 +53,102 @@ export default function AppointmentForm(props) {
 
     const handleConfirm = (value) => {
         console.log(value, '<<<<< value');
-        if(Platform.OS==="android"){
-            setAppointmentDateToPass(new Date(value));
-            setAppointmentDate(value)
+        if (Platform.OS === "ios") {
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+            const date = new Date(value).toLocaleString('en-US', { timeZone })
+            const day = new Date(String(date)).getDay()
+            let theDay = ''
+            switch (day) {
+                case 0:
+                    theDay = 'Sunday'
+                    break;
+                case 1:
+                    theDay = 'Monday'
+                    break;
+                case 2:
+                    theDay = 'Tuesday'
+                    break;
+                case 3:
+                    theDay = 'Wednesday'
+                    break;
+                case 4:
+                    theDay = 'Thursday'
+                    break;
+                case 5:
+                    theDay = 'Friday'
+                    break;
+                case 6:
+                    theDay = 'Saturday'
+                    break;
+            }
+            let validator = false
+            practiceDays.forEach(day => {
+                if (day.toLowerCase() === theDay.toLowerCase()) validator = true
+            })
+            if (validator) {
+                console.log("masuk validator");
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const month = monthNames[value.getMonth()]
+                const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
+                const dateToPass = new Date(`${value.getDate()} ${month} ${value.getFullYear()} 12:12:12`)
+                // console.log(`${value.getDate()} ${month} ${value.getFullYear()} ini adalah appointment date`);
+                // const dateToPass = new Date(date)
+                setAppointmentDateToPass(new Date(dateToPass));
+                setAppointmentDate(newFormat)
+                hideDatePicker();
+            } else {
+                alert('doctor is not available on that day')
+            }
         }
-        // console.log(timeZone, '<<< timezone');
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const date = new Date(value).toLocaleString('en-US', {timeZone})
-        // console.log(date, '<<< date after formated with timezone');
-        const day = new Date(String(date)).getDay()
-        let theDay = ''
-        switch (day) {
-            case 0:
-                theDay = 'Sunday'
-                break;
-            case 1:
-                theDay = 'Monday'
-                break;
-            case 2:
-                theDay = 'Tuesday'
-                break;
-            case 3:
-                theDay = 'Wednesday'
-                break;
-            case 4:
-                theDay = 'Thursday'
-                break;
-            case 5:
-                theDay = 'Friday'
-                break;
-            case 6:
-                theDay = 'Saturday'
-                break;
-        }
-        let validator = false
-        practiceDays.forEach(day => {
-            if (day.toLowerCase() === theDay.toLowerCase()) validator = true
-        })
-        if (validator) {
-            console.log("masuk validator");
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const month = monthNames[value.getMonth()]
-            const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
-            const dateToPass = new Date(`${value.getDate()} ${month} ${value.getFullYear()} 12:12:12`)
-            // console.log(`${value.getDate()} ${month} ${value.getFullYear()} ini adalah appointment date`);
-            // const dateToPass = new Date(date)
-            setAppointmentDateToPass(new Date(dateToPass));
-            setAppointmentDate(newFormat)
-            hideDatePicker();
-        } else {
-            alert('doctor is not available on that day')
+        else {
+            const date = new Date(value).toLocaleString('en-US', { timeZone: "Asia/Jakarta" })
+            const day = new Date(String(date)).getDay()
+            let theDay = ''
+            switch (day) {
+                case 0:
+                    theDay = 'Sunday'
+                    break;
+                case 1:
+                    theDay = 'Monday'
+                    break;
+                case 2:
+                    theDay = 'Tuesday'
+                    break;
+                case 3:
+                    theDay = 'Wednesday'
+                    break;
+                case 4:
+                    theDay = 'Thursday'
+                    break;
+                case 5:
+                    theDay = 'Friday'
+                    break;
+                case 6:
+                    theDay = 'Saturday'
+                    break;
+            }
+            console.log(theDay, "<<< day");
+            let validator = false
+            practiceDays.forEach(day => {
+                if (day.toLowerCase() === theDay.toLowerCase()) validator = true
+            })
+            if (validator) {
+                console.log("masuk validator");
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const month = monthNames[value.getMonth()]
+                console.log(theDay, "<<< theday di validator");
+                const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
+                console.log(newFormat,'<< new format');
+                const dateToPass = new Date(`${value.getDate()} ${month} ${value.getFullYear()} 12:12:12`)
+                console.log(dateToPass,'<< date to pass');
+                // console.log(`${value.getDate()} ${month} ${value.getFullYear()} ini adalah appointment date`);
+                // const dateToPass = new Date(date)
+                setAppointmentDateToPass(new Date(dateToPass));
+                setAppointmentDate(newFormat)
+                hideDatePicker();
+            } else {
+                alert('doctor is not available on that day')
+            }
         }
 
     };
@@ -123,7 +169,7 @@ export default function AppointmentForm(props) {
                 borderBottomRightRadius: 60,
                 borderBottomWidth: 3,
                 // borderBottomStartRadius: 3,
-                borderColor:'#68e8cb',
+                borderColor: '#68e8cb',
                 // backgroundColor: '#68e8cb',
                 zIndex: 0
             }}>
@@ -133,7 +179,7 @@ export default function AppointmentForm(props) {
                 alignSelf: 'center',
             }}>
                 <View>
-                    <Avatar.Image size={100} source={{uri: image_url}} style={{marginHorizontal: 10,}}/>
+                    <Avatar.Image size={100} source={{ uri: image_url }} style={{ marginHorizontal: 10, }} />
                     {/* <Avatar.Image size={100} source={require(`../src/images/doctor0.jpeg`)} style={{marginHorizontal: 10,}}/> */}
                 </View>
                 <View style={{
@@ -230,7 +276,7 @@ export default function AppointmentForm(props) {
                 <TextInput
                     style={{
                         height: 50,
-                        width: 210,
+                        width: 250,
                         backgroundColor: "white",
                         // borderRadius:10
                         borderTopLeftRadius: 0,
@@ -247,7 +293,7 @@ export default function AppointmentForm(props) {
                     textContentType="emailAddress"
                     onTouchStart={showDatePicker}
                     keyboardType="email-address"
-                    disabled={ Platform.OS === 'android' ? false : true}
+                    disabled={false}
                 />
                 <DateTimePickerModal
                     isVisible={isDatePickerVisible}
@@ -269,9 +315,9 @@ export default function AppointmentForm(props) {
                     marginBottom: 20
                 }}
                 color='#0ec7a8'
-                onPress={ async () => {
+                onPress={async () => {
                     const obj = {
-                        access_token : userData.access_token,
+                        access_token: userData.access_token,
                         doctorId: _id,
                         appointmentDate: appointmentDateToPass
                     }

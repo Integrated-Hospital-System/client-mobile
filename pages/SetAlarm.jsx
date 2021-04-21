@@ -1,7 +1,7 @@
 // route.params yang di destruct, usestate tempAlarm gw komen dulu
 
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, ScrollView, View, ImageBackground,Image } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, ImageBackground,Image, Platform } from 'react-native';
 import { Avatar, Button, Card, TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux'
 import { updateAlarm, asyncFetchMeds } from '../store/actions'
@@ -46,18 +46,27 @@ export default function SetAlarm({route, navigation}) {
 
   const handleConfirm = (value) => {
     console.log(value);
-    const date = new Date(value)
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const alarmTime = date.toLocaleString('en-US', {timeZone})
-    const hour = new Date(alarmTime).getHours()
-    const minute= new Date(alarmTime).getMinutes()
-    let minutes;
-    let hours;
-    minute < 10 ? minutes = '0' + minute : minutes = minute
-    hour < 10 ? hours = '0' + hour : hours = hour
-    setTime(`${hours}:${minutes}`)
-    tempAlarm[indexToEdit] = `${hours}:${minutes}`
-    // alarm[indexToEdit] = `${hours}:${minutes}`
+    if(Platform.OS ==="ios"){
+      const date = new Date(value)
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const alarmTime = date.toLocaleString('en-US', {timeZone})
+      const hour = new Date(alarmTime).getHours()
+      const minute= new Date(alarmTime).getMinutes()
+      let minutes;
+      let hours;
+      minute < 10 ? minutes = '0' + minute : minutes = minute
+      hour < 10 ? hours = '0' + hour : hours = hour
+      setTime(`${hours}:${minutes}`)
+      tempAlarm[indexToEdit] = `${hours}:${minutes}`
+      // alarm[indexToEdit] = `${hours}:${minutes}`
+    }
+    else{
+      const date = new Date(value)
+      date.setHours(date.getHours()+7-7)
+      const formatted = `${date.getHours()}:${date.getMinutes()}`
+      setTime(formatted)
+      tempAlarm[indexToEdit] = formatted
+    }
     hideDatePicker();
   };
 
