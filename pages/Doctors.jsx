@@ -15,9 +15,30 @@ import Icon from 'react-native-vector-icons/Ionicons'
 export default function Doctors() {
   const doctors = useSelector(state => state.doctorReducer.doctors)
   const [isLoading, setIsLoading] = useState(false);
+  const [searchBar, setSearchBar] = useState('')
+  const [filteredDoctor, setFilteredDoctor] = useState([])
+  // console.log('>>>>>> doctors<<<<<<<<<<<<<');
+  // console.log(doctors,"<<doctors<<<");
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
+
+  function filterData(searchBar) {
+    
+    const newData = doctors.filter(eachDoc => {
+      let docName = eachDoc.name.toLocaleLowerCase()
+      let docSpeciality = eachDoc.speciality.join(" ")
+      if (docName.includes(searchBar.toLowerCase()) || docSpeciality.includes(searchBar.toLowerCase())) {
+        return eachDoc
+      }
+    })
+    console.log(searchBar.toLowerCase());
+    console.log(newData, '<<<<<< new data');
+    setFilteredDoctor(newData)
+    console.log(filteredDoctor, '<<< filtered doctor<<<<<<<<<');
+    setSearchBar(searchBar)
+  }
+
   // console.log(doctors, '<<<< doctors di page doctors');
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
@@ -33,7 +54,7 @@ export default function Doctors() {
         <ScrollView
           vertical
         >
-          
+
           <View style={{
             flexDirection: 'row',
             height: 200,
@@ -43,50 +64,56 @@ export default function Doctors() {
             <Image source={require('../src/images/3doctors.png')} style={{ height: "100%", width: "100%" }} />
           </View>
           <View>
-          <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: 'center',
-                    marginHorizontal: 40,
-                    backgroundColor: 'white',
-                    // borderWidth: 3,
-                    borderBottomWidth: 3,
-                    borderColor: "#0ec7a8",
-                    borderRadius: 20,
-                    
-                    // borderBottomLeftRadius: 20,
-                    // borderBottomRightRadius: 20
-                }}>
-                <Icon
-                    name="search"
-                    size={32}
-                    color="#0ec7a8"
-                    style={{
-                        paddingHorizontal: 10
-                    }}
-                />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: 'center',
+                marginHorizontal: 40,
+                backgroundColor: 'white',
+                // borderWidth: 3,
+                borderBottomWidth: 3,
+                borderColor: "#0ec7a8",
+                borderRadius: 20,
 
-                <TextInput
-                    style={{
-                        height: 50,
-                        width: 230,
-                        backgroundColor: "white"                        
-                    }}
-                    underlineColor="white"
-                    label="find your doctor here"
-                    returnKeyType="next"
-                    // value={email}
-                    // onChangeText={emailInput => setEmail(emailInput)}
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
-                />
+                // borderBottomLeftRadius: 20,
+                // borderBottomRightRadius: 20
+              }}>
+              <Icon
+                name="search"
+                size={32}
+                color="#0ec7a8"
+                style={{
+                  paddingHorizontal: 10
+                }}
+              />
+
+              <TextInput
+                style={{
+                  height: 50,
+                  width: 230,
+                  backgroundColor: "white"
+                }}
+                underlineColor="white"
+                label="find doctor by name or speciality"
+                onChangeText={text => filterData(text)}
+                returnKeyType="next"
+                // value={email}
+                // onChangeText={emailInput => setEmail(emailInput)}
+                autoCompleteType="email"
+                textContentType="emailAddress"
+                keyboardType="email-address"
+              />
             </View>
           </View>
           {
-            doctors.map(doctor => {
-              return <AccordionView doctor={doctor} key={doctor._id} />
-            })
+            !searchBar ?
+              doctors.map(doctor => {
+                return <AccordionView doctor={doctor} key={doctor._id} />
+              })
+              :
+              filteredDoctor.map(doctor => {
+                return <AccordionView doctor={doctor} key={doctor._id} />
+              })
           }
 
         </ScrollView>
