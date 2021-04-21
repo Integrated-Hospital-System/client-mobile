@@ -1,7 +1,7 @@
 // route.params yang di destruct, usestate tempAlarm gw komen dulu
 
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, ScrollView, View, ImageBackground,Image } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, ImageBackground,Image, Pressable } from 'react-native';
 import { Avatar, Button, Card, TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux'
 import { updateAlarm, asyncFetchMeds } from '../store/actions'
@@ -130,7 +130,8 @@ export default function SetAlarm({route, navigation}) {
                   backgroundColor: 'white',
                   borderBottomWidth: 1,
                   borderColor: "#0ec7a8",
-              }}>
+              }}
+              key={index}>
                   <IconFA
                   name="check-square-o"
                   size={30}
@@ -138,19 +139,29 @@ export default function SetAlarm({route, navigation}) {
                   color='#0ec7a8'
                   >
                   </IconFA>
-                  <TextInput
-                    key={Math.random()}
-                    label={`Alarm ${index + 1}`}
-                    keyboardType={'numeric'}
-                    value={oneAlarm === '--:--' ? '' : oneAlarm}
-                    underlineColor="white"
-                    style={{ backgroundColor: 'white', width: 250}}
-                    // onTouchStart={showDatePicker(index)}
-                    onTouchEnd={() => {
-                      setIndexToEdit(index)
-                      showDatePicker()
-                    }}
-                  />
+                  {/* <Pressable
+                  onPress={() => {
+                    setIndexToEdit(index)
+                    showDatePicker()
+                  }}> */}
+                    {/* <Text>
+                    {oneAlarm === '--:--' ? `Alarm ${index + 1}` : oneAlarm}
+                    </Text> */}
+                    {/* <TextInput
+                      key={Math.random()}
+                      label={`Alarm ${index + 1}`}
+                      keyboardType={'numeric'}
+                      value={oneAlarm === '--:--' ? '' : oneAlarm}
+                      underlineColor="white"
+                      style={{ backgroundColor: 'white', width: 250}}
+                      // onTouchStart={showDatePicker(index)}
+                      // onTouchEnd={() => {
+                      //   setIndexToEdit(index)
+                      //   showDatePicker()
+                      // }}
+                      // disabled={true}
+                    /> */}
+                  {/* </Pressable> */}
                 </View>
               )
             })}
