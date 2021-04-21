@@ -144,7 +144,7 @@ export default function Homepage({navigation}) {
         <Button
           mode="contained"
           icon="check-circle"
-          // onPress={onSubmitLogin}
+          onPress={() => navigation.navigate('History')}
           style={{
             marginHorizontal: 50,
             marginTop: 10,

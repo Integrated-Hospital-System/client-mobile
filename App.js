@@ -13,6 +13,7 @@ import store from './store'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import AppointmentForm from './pages/AppointmentForm'
+import History from './pages/History'
 import AppContainer from './navigation'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { useFonts } from 'expo-font';
@@ -45,6 +46,7 @@ export default function App() {
             <Drawer.Screen name="Set Alarm" component={SetAlarm} />
             <Drawer.Screen name="AppointmentForm" component={AppointmentForm} />
             <Drawer.Screen name="Confirmation" component={Confimation} />
+            <Drawer.Screen name="History" component={History} />
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>
