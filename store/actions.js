@@ -26,65 +26,6 @@ export const signIn = (signInData) => async (dispatch) => {
 
 export const asyncFetchDoctors = () => async (dispatch) => {
     console.log('masuk asyncFetchDoctors')
-    const dummyDoctors = [
-      {
-        "id": "2",
-        "name": "Hasan",
-        "username": "hasan",
-        "email": "hasan@email.com",
-        "password": "hasan",
-        "role": "doctor",
-        "speciality": ["tht", "organ dalam"],
-        "practice": [
-          {
-            "day": "monday",
-            "start": "9:15",
-            "end": "15:45"
-          },
-          {
-            "day": "tuesday",
-            "start": "9:15",
-            "end": "15:45"
-          },
-          {
-            "day": "wednesday",
-            "start": "9:15",
-            "end": "15:45"
-          },
-          {
-            "day": "thursday",
-            "start": "9:15",
-            "end": "15:45"
-          },
-          {
-            "day": "friday",
-            "start": "11:00",
-            "end": "15:45"
-          }
-        ]
-      },
-      {
-        "id": "3",
-        "name": "Ratna",
-        "username": "ratna",
-        "email": "ratna@email.com",
-        "password": "ratna",
-        "role": "doctor",
-        "speciality": ["mata", "organ dalam"],
-        "practice": [
-          {
-            "day": "monday",
-            "start": "8:15",
-            "end": "17:45"
-          },
-          {
-            "day": "thursday",
-            "start": "8:17",
-            "end": "17:45"
-          }
-        ]
-      }
-    ]
     const cache = await AsyncStorage.getItem('user-data')
     const {access_token} = JSON.parse(cache)
     const {data} = await axios.get('/accounts?role=Doctor', {
@@ -102,7 +43,7 @@ export const updateAlarm =  (name, params, original) => (dispatch) => {
         med.alarms = params
       }
     })
-    console.log(original, '<<<< this goes to reducer for update')
+    // console.log(original, '<<<< this goes to reducer for update')
     dispatch({type: 'medicine/fetch', payload: original})
 }
 
@@ -171,7 +112,7 @@ export const deleteMed = (deletedMedName) => {
 }
 
 export const asyncNewAppointment = (obj) => async (dispatch) => {
-  const {doctorId, appointmentDate, access_token} = obj
+  const {doctorId, appointmentDate, access_token, setDate} = obj
   console.log(access_token, '<<< access_token');
   try {
     const response = await axios.post('/appointments', {
@@ -183,8 +124,64 @@ export const asyncNewAppointment = (obj) => async (dispatch) => {
         access_token
       }
     })
+    console.log(response, '<<<<< response after create new appointment');
+    dispatch({type: 'upcoming/set', payload: setDate})
     return response
   } catch (error) {
     return error
   }
+}
+
+export const drinkMedicine = (medicineName, doses) => async (dispatch) => {
+  dispatch({type: 'medicine/drink', payload: {medicineName, doses}})
+}
+
+export const getUpcomingAppointment = () => async (dispatch) => {
+  const cache = await AsyncStorage.getItem('user-data')
+  const {access_token} = JSON.parse(cache)
+  console.log(access_token, '<<< access');
+  const {data} = await axios.get('/appointments', {
+    headers: {
+      access_token
+    }
+  })
+
+  let date = ''
+  const filtered = data.filter(appointment => appointment.isCompleted === false)
+  filtered.forEach(appointment => {
+    if (date === '' || appointment.appointmentDate < date) {
+      date = appointment.appointmentDate
+    }
+  })
+  console.log(date, '<<<<< date');
+
+  const day = new Date(String(date)).getDay()
+  let theDay = ''
+  switch (day) {
+      case 0:
+          theDay = 'Sunday'
+          break;
+      case 1:
+          theDay = 'Monday'
+          break;
+      case 2:
+          theDay = 'Tuesday'
+          break;
+      case 3:
+          theDay = 'Wednesday'
+          break;
+      case 4:
+          theDay = 'Thursday'
+          break;
+      case 5:
+          theDay = 'Friday'
+          break;
+      case 6:
+          theDay = 'Saturday'
+          break;
+  }
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const month = monthNames[new Date(date).getMonth()]
+  const payload = `${theDay}, ${new Date(date).getDate()} ${month} ${new Date(date).getFullYear()}`
+  dispatch({type: 'upcoming/set', payload})
 }

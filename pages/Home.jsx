@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { asyncFetchMeds, asyncFetchDoctors } from '../store/actions'
+import { asyncFetchMeds, asyncFetchDoctors, getUpcomingAppointment } from '../store/actions'
 import { TouchableOpacity, Text, Image, View, StyleSheet, ImageBackground, TouchableHighlight, ScrollView } from 'react-native';
 import { Button, TextInput, Avatar } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
@@ -11,13 +11,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Homepage({navigation}) {
   const [cache, setCache] = useState('')
   const dispatch = useDispatch()
-  
+  const upcomingApp = useSelector(state => state.doctorReducer.upcomingAppointment)
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const doctors = useSelector(state => state.doctorReducer.doctors)
   useEffect(() => {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())
-    // console.log(medicines, '<<< medicines');
+    dispatch(getUpcomingAppointment())
+    console.log(medicines, '<<< medicines');
     // console.log(doctors, '<<< doctors');
   }, [])
   const userData = null
@@ -57,7 +58,7 @@ export default function Homepage({navigation}) {
           fontSize: 15,
           marginBottom: 10
         }}>
-          Closest Appointment Schedule:
+          Upcoming Appointment Schedule:
         </Text>
         <View 
         style={{
@@ -74,7 +75,7 @@ export default function Homepage({navigation}) {
             fontFamily: 'coolvetica-rg',
             fontSize: 20,
 
-          }}>tes</Text>
+          }}>{upcomingApp === '' ? '-' : upcomingApp}</Text>
         </View>
         <View
           style={{
@@ -132,7 +133,7 @@ export default function Homepage({navigation}) {
         >
           New Appointment
           </Button>
-          <View
+          {/* <View
           style={{
             flexDirection: 'row',
             justifyContent: "center",
@@ -157,7 +158,7 @@ export default function Homepage({navigation}) {
           color='#1d7a57'
         >
           History
-          </Button>
+          </Button> */}
         {/* <View
           style={{
             flexDirection: 'row',
