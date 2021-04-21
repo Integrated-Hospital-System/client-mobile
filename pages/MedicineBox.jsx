@@ -75,7 +75,7 @@ export default function Doctors( { navigation } ) {
         >
           {medicines.map((med, index) => {
             return <MedCard
-              key={Math.random()}
+              key={index}
               name={med.medicine.name}
               totalMed ={med.totalMedicine}
               alarm={med.alarms}
