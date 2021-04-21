@@ -8,6 +8,7 @@ import {
   PassionOne_400Regular
 } from '@expo-google-fonts/dev'
 import MedCard from '../components/MedCard'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 export default function Doctors( { navigation } ) {
@@ -23,6 +24,11 @@ export default function Doctors( { navigation } ) {
   useEffect(() => {
     console.log(medicines, '<<<<<<<<<<<, medicines dari useeffect medbox')
     console.log('masuk useeffect');
+    async function getMedCache () {
+      const data = await AsyncStorage.getItem('medicine-data')
+      console.log(data, '<<<< cache');
+    }
+    getMedCache()
   }, [isFocused])
 
   if (!fontsLoaded || isLoading) {

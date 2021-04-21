@@ -107,167 +107,8 @@ export const updateAlarm =  (name, params, original) => (dispatch) => {
 }
 
 export const asyncFetchMeds = () => async (dispatch) => {
-
     console.log('masuk asyncFetchMeds');
-    const dummy = [
-        {
-          "id": "1",
-          "appointment": {
-            "id": "1",
-            "doctor": {
-              "id": "2",
-              "name": "Hasan",
-              "username": "hasan",
-              "email": "hasan@email.com",
-              "password": "hasan",
-              "role": "doctor"
-            },
-            "patient": {
-              "id": "5",
-              "name": "Gunawan",
-              "username": "gunawan",
-              "email": "gunawan@email.com",
-              "password": "gunawan",
-              "role": "patient",
-              "age": 50,
-              "gender": "male",
-              "comorbid": [
-                "diabetes"
-              ]
-            },
-            "appointmentDate": "15/04/2021 20:00",
-            "isCompleted": false
-          },
-          "medicines": [
-            {
-              "medicine": {
-                "id": "1",
-                "name": "Panadol",
-                "description": "sakit kepala"
-              },
-              "timesPerDay": 2,
-              "doses": 3,
-              "totalMedicine": 9,
-              "notes": ""
-            },
-            {
-              "medicine": {
-                "id": "2",
-                "name": "Vitamin D",
-                "description": "Vitamin"
-              },
-              "timesPerDay": 1,
-              "doses": 1,
-              "totalMedicine": 3,
-              "notes": ""
-            },
-            {
-              "medicine": {
-                "id": "10",
-                "name": "Antibiotik",
-                "description": "antibiotik"
-              },
-              "timesPerDay": 3,
-              "doses": 1,
-              "totalMedicine": 6,
-              "notes": "habiskan"
-            }
-          ],
-          "diseases": [
-            "migraine"
-          ]
-        },
-        {
-          "id": "1",
-          "appointment": {
-            "id": "1",
-            "doctor": {
-              "id": "2",
-              "name": "Hasan",
-              "username": "hasan",
-              "email": "hasan@email.com",
-              "password": "hasan",
-              "role": "doctor"
-            },
-            "patient": {
-              "id": "5",
-              "name": "Gunawan",
-              "username": "gunawan",
-              "email": "gunawan@email.com",
-              "password": "gunawan",
-              "role": "patient",
-              "age": 50,
-              "gender": "male",
-              "comorbid": [
-                "diabetes"
-              ]
-            },
-            "appointmentDate": "15/04/2021 20:00",
-            "isCompleted": false
-          },
-          "medicines": [
-            {
-              "medicine": {
-                "id": "1",
-                "name": "Panadol",
-                "description": "sakit kepala"
-              },
-              "timesPerDay": 2,
-              "doses": 3,
-              "totalMedicine": 9,
-              "notes": ""
-            },
-            {
-              "medicine": {
-                "id": "2",
-                "name": "Vitamin D",
-                "description": "Vitamin"
-              },
-              "timesPerDay": 1,
-              "doses": 1,
-              "totalMedicine": 3,
-              "notes": ""
-            },
-            {
-              "medicine": {
-                "id": "10",
-                "name": "Antibiotik",
-                "description": "antibiotik"
-              },
-              "timesPerDay": 3,
-              "doses": 1,
-              "totalMedicine": 6,
-              "notes": "habiskan"
-            }
-          ],
-          "diseases": [
-            "migraine"
-          ]
-        }
-      ]
     try {
-      let temp = []
-      for (let i = 0; i < dummy[0].medicines.length; i++) {
-        const med = dummy[0].medicines[i]
-        for (let j = 1; j < dummy.length; j++) {
-          const med2 = dummy[j].medicines
-          for (let l = 0; l < med2.length; l++) {
-            const medToCompare = dummy[j].medicines[l]
-            if (med.medicine.name === medToCompare.medicine.name) {
-              // console.log(medToCompare.medicine.name, '<<< sama')
-              med.totalMedicine += medToCompare.totalMedicine
-            }
-          }
-        }
-        for (let i = 0; i < med.timesPerDay; i++) {
-          if (!med.alarms) {
-            med.alarms = []
-          }
-          med.alarms.push('--:--')
-        }
-        temp.push(med)
-      }
-
       const cache = await AsyncStorage.getItem('user-data')
       const {access_token} = JSON.parse(cache)
       console.log(access_token, '<<< access');
@@ -276,16 +117,37 @@ export const asyncFetchMeds = () => async (dispatch) => {
           access_token
         }
       })
-
-      data.forEach(order => {
-        console.log(order.medicines, '<<<<< medicines tiap order');
-      })
-
-
-
-
-
-
+      let temp = []
+      for (let i = 0; i < data[0].medicines.length; i++) {
+        // const med = data[0].medicines[i]
+        const med = data[0].medicines
+        for (let j = 0; j < med.length; j++) {
+          const med2 = med[j]
+          temp.push(med2)
+        }
+      }
+      for (let i = 1; i < data.length; i++) {
+        const med = data[i].medicines
+        for (let j = 0; j < med.length; j++) {
+          const med2 = med[j]
+          for (let l = 0; l < temp.length; l++) {
+            if (med2.medicine.name === temp[l].medicine.name) {
+              // temp[l].timesPerDay = med2.timesPerDay
+              temp[l].totalMedicine = temp[l].totalMedicine + med2.totalMedicine
+            }
+          }
+        }
+      }
+      for (let i = 0; i < temp.length; i++) {
+        console.log(temp[i].timesPerDay)
+        for (let j = 0; j < temp[i].timesPerDay; j++) {
+          if (!temp[i].alarms) {
+            temp[i].alarms = []
+          }
+          temp[i].alarms.push('--:--')
+        }
+      }
+      await AsyncStorage.setItem('medicine-data', JSON.stringify(temp))
       dispatch({type: 'medicine/fetch', payload: temp})
   } catch (error) {
       console.log(error, '<<< error try catch')
