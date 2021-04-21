@@ -58,6 +58,9 @@ export default function DocCard(props) {
   useEffect(() => {
     console.log(`medicine ${name} have alarms as such:
     ${alarm}`);
+    console.log(`${name} stock in redux store:
+    ${totalMed}`);
+    setMedAmmout(totalMed)
   }, [isFocused])
 
 
@@ -85,8 +88,7 @@ export default function DocCard(props) {
   }, []);
 
   async function schedulePushNotification(param) {
-    alert(`Boop Boop... 💊\nIt's time to take your ${name} x ${doses}`)
-    navigation.navigate('Confirmation', {name})
+    navigation.navigate('Confirmation', {name, doses, totalMed})
     await Notifications.scheduleNotificationAsync({
       content: ({
         title: "Boop Boop... 💊",
@@ -135,7 +137,6 @@ export default function DocCard(props) {
       const alarmHour = +(time[0]+time[1])
       const alarmMinutes = +(time[3]+time[4])
       if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
-        alert(minutes)
         schedulePushNotification(minutes)
       }
     })

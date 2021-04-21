@@ -319,7 +319,8 @@ export default function AppointmentForm(props) {
                     const obj = {
                         access_token: userData.access_token,
                         doctorId: _id,
-                        appointmentDate: appointmentDateToPass
+                        appointmentDate: appointmentDateToPass,
+                        setDate: appointmentDate
                     }
                     try {
                         console.log(obj, '<<<< argument to pass');

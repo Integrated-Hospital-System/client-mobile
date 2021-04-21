@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, ScrollView, View, Image } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import { drinkMedicine } from '../store/actions'
+import { useDispatch } from 'react-redux'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 // import { useSelector, useDispatch } from 'react-redux'
@@ -12,7 +14,13 @@ import {
 } from '@expo-google-fonts/dev'
 
 
-export default function Doctors({ navigation }) {
+export default function Doctors({ route, navigation }) {
+  const dispatch = useDispatch()
+  const { name, totalMed, doses } = route.params
+  console.log(name, '<<<<<< medicine name');
+  console.log('drank', doses, 'medicine left:', totalMed - doses);
+  // const {name} = route.params
+  // alert(`${name} <<<<< name dari confirmation page`);
   // const isFocused = useIsFocused()
   // const dispatch = useDispatch()
   // const medicines = useSelector(state => state.medicineReducer.medicines)
@@ -85,7 +93,7 @@ export default function Doctors({ navigation }) {
             textAlign: 'center',
             // backgroundColor: 'red'
           }}
-        >Have you take your medicine?</Text>
+        >Have you take your {name} ({doses})?</Text>
         <View style={styles.answer} >
           <Button
             mode="outlined"
@@ -103,7 +111,7 @@ export default function Doctors({ navigation }) {
             }}
             color='#0ec7a8'
             onPress={() => {
-              navi
+              navigation.navigate('Home')
             }}
           >
             No
@@ -121,6 +129,10 @@ export default function Doctors({ navigation }) {
               height: 100,
             }}
             color='#0ec7a8'
+            onPress= {async () => {
+              await dispatch(drinkMedicine(name, doses))
+              navigation.navigate('Home')
+            }}
           >
             Yes
           </Button>
