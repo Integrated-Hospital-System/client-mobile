@@ -117,27 +117,31 @@ export const asyncFetchMeds = () => async (dispatch) => {
           access_token
         }
       })
+
       let temp = []
       for (let i = 0; i < data[0].medicines.length; i++) {
-        // const med = data[0].medicines[i]
-        const med = data[0].medicines
-        for (let j = 0; j < med.length; j++) {
-          const med2 = med[j]
-          temp.push(med2)
-        }
+        const med = data[0].medicines[i]
+        temp.push(med)
       }
+
+      // console.log(temp, '<<< temp')
+
       for (let i = 1; i < data.length; i++) {
+        if (data[i]) break
         const med = data[i].medicines
         for (let j = 0; j < med.length; j++) {
-          const med2 = med[j]
-          for (let l = 0; l < temp.length; l++) {
-            if (med2.medicine.name === temp[l].medicine.name) {
-              // temp[l].timesPerDay = med2.timesPerDay
-              temp[l].totalMedicine = temp[l].totalMedicine + med2.totalMedicine
-            }
-          }
+          const med2 = data[i].medicines[j]
+          // for (let l = 0; l < temp.length; l++) {
+          //   if (med2.medicine.name === temp[l].medicine.name) {
+          //     // temp[l].timesPerDay = med2.timesPerDay
+          //     temp[l].totalMedicine = temp[l].totalMedicine + med2.totalMedicine
+          //   }
+          // }
         }
       }
+
+      // console.log(temp, '<<<< temp di action fetch med sebelum dikasih alarm')
+
       for (let i = 0; i < temp.length; i++) {
         console.log(temp[i].timesPerDay)
         for (let j = 0; j < temp[i].timesPerDay; j++) {
@@ -148,6 +152,8 @@ export const asyncFetchMeds = () => async (dispatch) => {
         }
       }
       await AsyncStorage.setItem('medicine-data', JSON.stringify(temp))
+      console.log(temp)
+      console.log('<<<<<< ini temp di actions fetch med buat masuk ke payload')
       dispatch({type: 'medicine/fetch', payload: temp})
   } catch (error) {
       console.log(error, '<<< error try catch')

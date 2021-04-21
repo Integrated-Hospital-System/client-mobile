@@ -12,8 +12,8 @@ export default function Homepage({navigation}) {
   const [cache, setCache] = useState('')
   const dispatch = useDispatch()
   
-  // const medicines = useSelector(state => state.medicineReducer.medicines)
-  // const doctors = useSelector(state => state.doctorReducer.doctors)
+  const medicines = useSelector(state => state.medicineReducer.medicines)
+  const doctors = useSelector(state => state.doctorReducer.doctors)
   useEffect(() => {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())

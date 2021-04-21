@@ -22,7 +22,7 @@ export function DrawerContent (props) {
                 <View style={styles.userInfoSection}>
                     <View style={{flexDirection:'row',marginTop: 15}}>
                         <Image
-                        source={{uri: "https://i.imgur.com/RUjVrWs.png"}}
+                        source={{uri: "https://i.ibb.co/T2nz0pC/mamed-logo.png"}}
                         style={{width: 100, height: 100, marginTop: 50, marginLeft: 70, marginRight: 20}}
                         />
                     </View>

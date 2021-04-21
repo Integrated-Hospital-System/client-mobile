@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
-import { StyleSheet, Text, ScrollView, View, ImageBackground, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, ImageBackground, Image, Dimensions, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput, Button, Avatar } from 'react-native-paper'
 // const DateTimePicker = require('@react-native-community/datetimepicker');
@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux'
 
 export default function AppointmentForm(props) {
     const dispatch = useDispatch()
-    const { practice, speciality, name, _id } = props.route.params
+    const { practice, speciality, name, _id, image_url } = props.route.params
     const [appointmentDate, setAppointmentDate] = useState('')
     const [appointmentDateToPass, setAppointmentDateToPass] = useState('')
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -21,8 +21,10 @@ export default function AppointmentForm(props) {
     const [comorbid, setComorbid] = useState('')
     const [userData, setUserData] = useState('')
 
+
     useEffect(() => {
         const getDetail = async () => {
+            console.log(Platform.OS, '<<< OS platform');
             let tempArr = []
             practice.forEach(details => tempArr.push(details.day))
             setPracticeDays(tempArr)
@@ -41,6 +43,7 @@ export default function AppointmentForm(props) {
     }, [appointmentDate])
 
     const showDatePicker = () => {
+        console.log("masuk func sho date picker");
         setDatePickerVisibility(true);
     };
 
@@ -50,8 +53,12 @@ export default function AppointmentForm(props) {
 
     const handleConfirm = (value) => {
         console.log(value, '<<<<< value');
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        if(Platform.OS==="android"){
+            setAppointmentDateToPass(new Date(value));
+            setAppointmentDate(value)
+        }
         // console.log(timeZone, '<<< timezone');
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
         const date = new Date(value).toLocaleString('en-US', {timeZone})
         // console.log(date, '<<< date after formated with timezone');
         const day = new Date(String(date)).getDay()
@@ -84,6 +91,7 @@ export default function AppointmentForm(props) {
             if (day.toLowerCase() === theDay.toLowerCase()) validator = true
         })
         if (validator) {
+            console.log("masuk validator");
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const month = monthNames[value.getMonth()]
             const newFormat = `${theDay}, ${value.getDate()} ${month} ${value.getFullYear()}`
@@ -125,7 +133,8 @@ export default function AppointmentForm(props) {
                 alignSelf: 'center',
             }}>
                 <View>
-                    <Avatar.Image size={100} source={require(`../src/images/doctor0.jpeg`)} style={{marginHorizontal: 10,}}/>
+                    <Avatar.Image size={100} source={{uri: image_url}} style={{marginHorizontal: 10,}}/>
+                    {/* <Avatar.Image size={100} source={require(`../src/images/doctor0.jpeg`)} style={{marginHorizontal: 10,}}/> */}
                 </View>
                 <View style={{
                     marginLeft: 20
@@ -134,7 +143,7 @@ export default function AppointmentForm(props) {
                         fontFamily: 'coolvetica-rg',
                         fontSize: 20,
                         textAlign: 'left',
-                    }}>Dr. {name}</Text>
+                    }}>{name}</Text>
                     <View style={{
                         marginBottom: 20,
                         alignSelf: 'center'
@@ -216,6 +225,7 @@ export default function AppointmentForm(props) {
                     style={{
                         paddingHorizontal: 10,
                     }}
+                    onPress={showDatePicker}
                 />
                 <TextInput
                     style={{
@@ -237,7 +247,7 @@ export default function AppointmentForm(props) {
                     textContentType="emailAddress"
                     onTouchStart={showDatePicker}
                     keyboardType="email-address"
-                    disabled={true}
+                    disabled={ Platform.OS === 'android' ? false : true}
                 />
                 <DateTimePickerModal
                     isVisible={isDatePickerVisible}
@@ -245,45 +255,8 @@ export default function AppointmentForm(props) {
                     onConfirm={handleConfirm}
                     onCancel={hideDatePicker}
                 />
-                {/* <Ionicons
-                    name="calendar"
-                    size={32}
-                    color="white"
-                    style={{
-                        paddingHorizontal: 7,
-                        paddingVertical: 7,
-                        borderWidth: 2,
-                        borderRadius: 10,
-                        textAlign: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#0ec7a8',
-                        borderColor: "#0ec7a8",
-                        // justifyContent: 'flex-end'
-                    }}
-                    onPress={showDatePicker}
-                /> */}
-            </View>
-
-
-            <View>
 
             </View>
-
-            {/* <View>
-                <View>
-                <Button onPress={showTimepicker} title="Show time picker!" />
-                </View>
-                {show && (
-                    <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChange}
-                        />
-                        )}
-                    </View> */}
 
             <Button
                 mode="contained"
@@ -322,29 +295,3 @@ export default function AppointmentForm(props) {
         </View>
     )
 }
-
-
-// {
-//     "id" : "1",
-//     "doctor": {   
-//         "id" : "2",
-//         "name" : "Hasan",
-//         "username" : "hasan",
-//         "email": "hasan@email.com",
-//         "password" : "hasan",
-//         "role" : "doctor"
-//     },
-//     "patient": {   
-//         "id" : "5",
-//         "name" : "Gunawan",
-//         "username" : "gunawan",
-//         "email": "gunawan@email.com",
-//         "password" : "gunawan",
-//         "role" : "patient",
-//         "age" : 50,
-//         "gender" : "male",
-//         "comorbid" : ["diabetes"]
-//     },
-//     "appointmentDate" : "15/04/2021 20:00",
-//     "isCompleted" : false
-// },

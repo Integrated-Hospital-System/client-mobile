@@ -68,7 +68,7 @@ export default function AccordionView(props) {
           }}
         >
           <View>
-            <Avatar.Image size={150} source={require(`../src/images/doctor0.jpeg`)} />
+            <Avatar.Image size={150} source={{uri: props.doctor.image_url}} />
           </View>
           <Text style={{ fontFamily: 'coolvetica-rg', fontSize: 20, textAlign: 'center', margin: 10 }}>{doctor.name}</Text>
 
