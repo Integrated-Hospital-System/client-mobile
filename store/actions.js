@@ -142,6 +142,7 @@ export const asyncFetchMeds = () => async (dispatch) => {
       }))
       dispatch({type: 'medicine/fetch', payload: arrOfMeds})
   } catch (error) {
+      console.log('failed');
       console.log(error, '<<< error try catch')
   }
 }
