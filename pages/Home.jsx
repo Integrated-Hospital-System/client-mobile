@@ -133,7 +133,7 @@ export default function Homepage({navigation}) {
         >
           New Appointment
           </Button>
-          {/* <View
+          <View
           style={{
             flexDirection: 'row',
             justifyContent: "center",
@@ -158,7 +158,7 @@ export default function Homepage({navigation}) {
           color='#1d7a57'
         >
           History
-          </Button> */}
+          </Button>
         {/* <View
           style={{
             flexDirection: 'row',
