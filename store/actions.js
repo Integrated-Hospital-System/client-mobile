@@ -117,44 +117,30 @@ export const asyncFetchMeds = () => async (dispatch) => {
           access_token
         }
       })
-
-      let temp = []
-      for (let i = 0; i < data[0].medicines.length; i++) {
-        const med = data[0].medicines[i]
-        temp.push(med)
-      }
-
-      // console.log(temp, '<<< temp')
-
-      for (let i = 1; i < data.length; i++) {
-        if (data[i]) break
-        const med = data[i].medicines
-        for (let j = 0; j < med.length; j++) {
-          const med2 = data[i].medicines[j]
-          // for (let l = 0; l < temp.length; l++) {
-          //   if (med2.medicine.name === temp[l].medicine.name) {
-          //     // temp[l].timesPerDay = med2.timesPerDay
-          //     temp[l].totalMedicine = temp[l].totalMedicine + med2.totalMedicine
-          //   }
-          // }
-        }
-      }
-
-      // console.log(temp, '<<<< temp di action fetch med sebelum dikasih alarm')
-
-      for (let i = 0; i < temp.length; i++) {
-        console.log(temp[i].timesPerDay)
-        for (let j = 0; j < temp[i].timesPerDay; j++) {
-          if (!temp[i].alarms) {
-            temp[i].alarms = []
+      const newOrder = data.filter(order => Object.keys(order).length > 0);
+      const medicines = newOrder.reduce((acc, data) => [...acc, ...data.medicines], [])
+      const newMedicines = medicines.reduce((acc, medicine) => {
+        if (!acc[medicine.medicine.name]) {
+          acc[medicine.medicine.name] = {
+            total: medicine.totalMedicine,
+            timesPerDay: medicine.timesPerDay,
+            doses: medicine.doses
           }
-          temp[i].alarms.push('--:--')
+          for (let i = 0; i < medicine.timesPerDay; i++) {
+            if (!acc[medicine.medicine.name].alarms) {
+              acc[medicine.medicine.name].alarms = []
+            }
+            acc[medicine.medicine.name].alarms.push('--:--')
+           }
+        } else {
+          acc[medicine.medicine.name].total += medicine.totalMedicine
         }
-      }
-      await AsyncStorage.setItem('medicine-data', JSON.stringify(temp))
-      console.log(temp)
-      console.log('<<<<<< ini temp di actions fetch med buat masuk ke payload')
-      dispatch({type: 'medicine/fetch', payload: temp})
+        return acc
+      }, {})
+      const arrOfMeds = Object.entries(newMedicines).map(([key, value]) => ({
+        ...value, medicine: {name:key}, totalMedicine: value.total
+      }))
+      dispatch({type: 'medicine/fetch', payload: arrOfMeds})
   } catch (error) {
       console.log(error, '<<< error try catch')
   }
