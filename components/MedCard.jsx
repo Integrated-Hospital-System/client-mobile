@@ -7,6 +7,7 @@ import { StyleSheet, View, ImageBackground, Image, Text } from 'react-native';
 import { Avatar, Card } from 'react-native-paper';
 import { useNavigation, Platform } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
+import IconMCI from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteMed } from '../store/actions'
 import { useIsFocused } from '@react-navigation/native'
@@ -32,7 +33,21 @@ export default function DocCard(props) {
   const parsing = JSON.parse(JSON.stringify(totalMed, null, 4))
   const [medAmmount, setMedAmmout] = useState(parsing)
   const alarmList = setAlarmTime()
-  const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="white" style={styles.avatar} />
+  // const LeftContent = props => <Avatar.Text size={50} label={medAmmount} color="white" style={styles.avatar} />
+  const LeftContent = props => <View 
+  style={{
+    flexDirection: 'column',
+    // backgroundColor: "#2e8760",
+    height:50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}
+  >
+    <IconMCI name="pill" size={25} color="#02a87c"></IconMCI>
+    <Text style={{color:'black', fontFamily:'coolvetica-rg' ,fontSize: 15}}>{medAmmount}</Text>
+  </View>
   const RightContent = props => (
     <View>
       <Icon
