@@ -18,7 +18,7 @@ export default function Doctors() {
   const [fontsLoaded] = useFonts({
     PassionOne_400Regular
   })
-  console.log(doctors, '<<<< doctors di page doctors');
+  // console.log(doctors, '<<<< doctors di page doctors');
   if (!fontsLoaded || isLoading) {
     return <Text>Loading...</Text>
   }

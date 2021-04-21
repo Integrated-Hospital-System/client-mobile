@@ -45,6 +45,7 @@ export default function SetAlarm({route, navigation}) {
   };
 
   const handleConfirm = (value) => {
+    console.log(value);
     const date = new Date(value)
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
     const alarmTime = date.toLocaleString('en-US', {timeZone})

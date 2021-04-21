@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 export default function DocCard(props) {
   const navigation = useNavigation()
   const {image_url, practice, name} = props
+  console.log('<<<<< props dari doctor card')
   const LeftContent = props => <Avatar.Image size={50} source={{uri: image_url}}/>
   const RightContent = props => (<Button color="#3075b5" onPress={() => {navigation.navigate('Home')}}>Info</Button>)
   const day = () => {
@@ -18,7 +19,7 @@ export default function DocCard(props) {
             } else {
                 praktek += `${temp[0].toUpperCase()}${temp[1]}${temp[2]} - `
             }
-        });
+      });
         if (practice.length === 7) praktek = 'Everyday'
         return praktek
   }
