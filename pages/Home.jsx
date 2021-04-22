@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux'
+import * as Notifications from 'expo-notifications';
 import { asyncFetchMeds, asyncFetchDoctors, getUpcomingAppointment, getHistory } from '../store/actions'
 import { TouchableOpacity, Text, Image, View, StyleSheet, ImageBackground, TouchableHighlight, ScrollView } from 'react-native';
 import { Button, TextInput, Avatar } from 'react-native-paper';
@@ -23,6 +24,16 @@ export default function Homepage({navigation}) {
     // console.log(doctors, '<<< doctors');
   }, [])
   const userData = null
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response, '<<<<<<<< response from clickable local notif');
+      const {name, doses, totalMed} = response.notification.request.content.data
+      console.log(response.notification.request.content.data, '<<<<<<<<<<<<<< data from push notif')
+      navigation.navigate('Confirmation', {name, doses, totalMed})
+    });
+    return () => subscription.remove();
+  }, []);
 
   const getData = async () => {
     try {
