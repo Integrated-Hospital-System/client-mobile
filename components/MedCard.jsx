@@ -124,10 +124,15 @@ export default function DocCard(props) {
             content: ({
               title: "Boop Boop... 💊",
               body: `It's time to take your ${name} x ${doses}`,
-              data: { data: 'goes here' },
+              data: { 
+                name,
+                doses,
+                totalMed
+              },
             }),
             trigger: { hour : hourSet, minute: minuteSet, repeats: true}
           });
+          console.log(notification, '<<<<<<<<<<< notification');
           // if (notification) {
           //   console.log(notification, '<<<<< notication before navigate');
           //   navigation.navigate('Confirmation', {name, doses, totalMed})
@@ -171,20 +176,12 @@ export default function DocCard(props) {
       return token;
     }
     useEffect(() => {
-      console.log('<<<<<<<<<<<<<<<<<<<<<<<<< check route');
-      const hours = new Date().getHours()
-      const minutes = new Date().getMinutes()
-      const seconds = new Date().getSeconds()
-      alarm.forEach(time => {
-        // console.log(time.split(':'), '<<<< time');
-        const alarmHour = +(time.split(':')[0])
-        const alarmMinutes = +(time.split(':')[1])
-        if (hours >= alarmHour && minutes >= alarmMinutes) {
-          console.log('<<<<<<<<<<<<<<<<<<<<<<<<< BERPINDAAAH!!!!!');
-          navigation.navigate('Confirmation', {name, doses, totalMed})
-        }
-      })
-    })
+      const subscription = Notifications.addNotificationReceivedListener(notification => {
+        console.log(notification)
+        navigation.navigate('Confirmation', {name, doses, totalMed})
+      });
+      return () => subscription.remove();
+    }, [])
   // setInterval(() => {
   //   const hours = new Date().getHours()
   //   const minutes = new Date().getMinutes()

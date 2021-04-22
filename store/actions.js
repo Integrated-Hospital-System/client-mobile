@@ -15,10 +15,10 @@ export const signUp = (signupdata) => async (dispatch) => {
 export const signIn = (signInData) => async (dispatch) => {
     console.log('enter action signIn')
     try {
-        const user = await axios.post('/login', signInData)
+        const {data} = await axios.post('/login', signInData)
         // console.log("success")
-        console.log(user, '<<<< user');
-        return user
+        await AsyncStorage.setItem('user-data', JSON.stringify(data, null, 2))
+        return data
     } catch (error) {
         // console.log("failed")
         console.log(error)
