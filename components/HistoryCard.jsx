@@ -8,11 +8,12 @@ import IconMCI from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 export default function HistoryCard(props) {
+    const {data} = props
 
-    const name = "Dr. Strange"
-    const penyakit = ["sakit kepala", 'sakit hati', 'sakit sakitan']
-    const date = '2021-04-21'
-    const obat = ['panadol', 'panadil', 'panadul']
+    const name = data.name
+    const penyakit = data.diseases
+    const date = data.date
+    const obat = data.medicines
 
     return (
         <Card style={styles.card}>

@@ -1,48 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, ScrollView, View, ImageBackground, Image } from 'react-native';
 import HistoryCard from "../components/HistoryCard"
+import { useSelector } from 'react-redux'
 
 export default function History() {
-    // ga kepake.....
-    // const dummyHistory = [
-    //     {
-    //         "_id": {
-    //             "$oid": "607fbdc88b6ded00150c709f"
-    //         },
-    //         "diseases": [
-    //             "flu",
-    //             "alergy",
-    //             "demam"
-    //         ],
-    //         "medicines": [
-    //             {
-    //                 "_id": {
-    //                     "$oid": "607fbdc88b6ded00150c70a0"
-    //                 },
-    //                 "timesPerDay": 2,
-    //                 "doses": 5,
-    //                 "totalMedicine": 10,
-    //                 "medicine": {
-    //                     "$oid": "607fa7b28b6ded00150c708c"
-    //                 }
-    //             },
-    //             {
-    //                 "_id": {
-    //                     "$oid": "607fbdc88b6ded00150c70a1"
-    //                 },
-    //                 "timesPerDay": 2,
-    //                 "doses": 5,
-    //                 "totalMedicine": 10,
-    //                 "medicine": {
-    //                     "$oid": "607fa7c08b6ded00150c708d"
-    //                 }
-    //             }
-    //         ],
-    //         "appointment": {
-    //             "$oid": "607fb72f8b6ded00150c709d"
-    //         }
-    //     }
-    // ]
+    const history = useSelector(state => state.doctorReducer.history)
 
     return (
         <View style={{
@@ -86,18 +48,12 @@ export default function History() {
                 }}
 
             >
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-               <HistoryCard></HistoryCard>
-
+                {history.map((data, index) => {
+                    return <HistoryCard
+                    key={index}
+                    data={data}
+                    />
+                })}
             </ScrollView>
         </View>
     );

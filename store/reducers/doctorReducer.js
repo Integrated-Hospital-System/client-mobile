@@ -1,6 +1,7 @@
 const initialState = {
     doctors: [],
-    upcomingAppointment: ''
+    upcomingAppointment: '',
+    history: []
 }
 
 export default function medicineReducer (state = initialState, action) {
@@ -11,6 +12,8 @@ export default function medicineReducer (state = initialState, action) {
         console.log('masuk doctor reducer upcoming/set');
         console.log(payload, '<<<< dari doctor reducer');
         return {...state, upcomingAppointment: payload}
+    } else if (type === 'history/fetch') {
+        return {...state, history: payload}
     }
     return state
 }
