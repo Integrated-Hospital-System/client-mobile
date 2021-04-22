@@ -22,6 +22,7 @@ Notifications.setNotificationHandler({
 
 export default function DocCard(props) {
   const isFocused = useIsFocused()
+  const [movePage, setMovePage] = useState(false)
   const medicines = useSelector(state => state.medicineReducer.medicines)
   const dispatch = useDispatch()
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -76,6 +77,11 @@ export default function DocCard(props) {
     console.log(`${name} stock in redux store:
     ${totalMed}`);
     setMedAmmout(totalMed)
+    if (movePage) {
+      navigation.navigate('Confirmation', {name, doses, totalMed})
+    }
+    schedulePushNotification()
+    console.log("schedulePushNotification sudah jalan");
   }, [isFocused])
 
 
@@ -103,59 +109,102 @@ export default function DocCard(props) {
   }, []);
 
   async function schedulePushNotification(param) {
-    navigation.navigate('Confirmation', {name, doses, totalMed})
-    await Notifications.scheduleNotificationAsync({
-      content: ({
-        title: "Boop Boop... 💊",
-        body: `It's time to take your ${name} x ${doses}`,
-        data: { data: 'goes here' },
-      }),
-      trigger: { seconds: 1 },
-    });
-  }
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert('Must use physical device for Push Notifications');
-    }
-
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-
-    return token;
-  }
-  setInterval(() => {
-    const hours = new Date().getHours()
-    const minutes = new Date().getMinutes()
-    const seconds = new Date().getSeconds()
-    alarm.forEach(time => {
-      const alarmHour = +(time[0]+time[1])
-      const alarmMinutes = +(time[3]+time[4])
-      if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
-        schedulePushNotification(minutes)
+    const set = alarmList.split('|')
+    set.forEach( async (time) => {
+      let hourSet;
+      let minuteSet;
+      if (time !== "No alarm set") {
+        hourSet = +(time.split(':')[0]).trim()
+        minuteSet = +(time.split(':')[1]).trim()
+        console.log(typeof hourSet, '<<<< type of hour set');
+        console.log(typeof minuteSet, '<<<< type of minute set');
+        if (typeof hourSet === 'number' && typeof minuteSet === 'number' && hourSet === hourSet) {
+          console.log(`${hourSet}:${minuteSet}, '<<<<< next alarm of ${name}`);
+          let notification = await Notifications.scheduleNotificationAsync({
+            content: ({
+              title: "Boop Boop... 💊",
+              body: `It's time to take your ${name} x ${doses}`,
+              data: { data: 'goes here' },
+            }),
+            trigger: { hour : hourSet, minute: minuteSet, repeats: true}
+          });
+          // if (notification) {
+          //   console.log(notification, '<<<<< notication before navigate');
+          //   navigation.navigate('Confirmation', {name, doses, totalMed})
+          //     notification = false
+          //     console.log(notification, '<<<<< notication after navigate');
+          // }
+        }
       }
     })
-  }, 1000)
+      // setMovePage(true)
+  }
+    
+    async function registerForPushNotificationsAsync() {
+      let token;
+      if (Constants.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+          alert('Failed to get push token for push notification!');
+          return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(token);
+      } else {
+        alert('Must use physical device for Push Notifications');
+      }
+      
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+      
+      return token;
+    }
+    useEffect(() => {
+      console.log('<<<<<<<<<<<<<<<<<<<<<<<<< check route');
+      const hours = new Date().getHours()
+      const minutes = new Date().getMinutes()
+      const seconds = new Date().getSeconds()
+      // console.log(hours, typeof hours, '<<<<<<< hours');
+      // console.log(alarmHour, typeof alarmHour, '<<<<<<< alarmHour');
+      // console.log(minutes, typeof minutes, '<<<<<<< minutes');
+      // console.log(alarm, typeof alarm, '<<<<<<< alarm');
+      // console.log(seconds, typeof seconds, '<<<<<<< seconds');
+      alarm.forEach(time => {
+        console.log(time.split(':'), '<<<< time');
+        // const alarmHour = +(time[0]+time[1])
+        // const alarmMinutes = +(time[3]+time[4])
+        const alarmHour = +(time.split(':')[0])
+        const alarmMinutes = +(time.split(':')[1])
+        if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
+          console.log('<<<<<<<<<<<<<<<<<<<<<<<<< BERPINDAAAH!!!!!');
+          navigation.navigate('Confirmation', {name, doses, totalMed})
+        }
+      })
+    })
+  // setInterval(() => {
+  //   const hours = new Date().getHours()
+  //   const minutes = new Date().getMinutes()
+  //   const seconds = new Date().getSeconds()
+  //   alarm.forEach(time => {
+  //     const alarmHour = +(time[0]+time[1])
+  //     const alarmMinutes = +(time[3]+time[4])
+  //     if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
+  //       schedulePushNotification(minutes)
+  //       navigation.navigate('Confirmation', {name, doses, totalMed})
+  //     }
+  //   })
+  // }, 1000)
   // functions for push notification ends here
 
   function setAlarmTime () {

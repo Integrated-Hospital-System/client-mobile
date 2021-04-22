@@ -17,6 +17,7 @@ export const signIn = (signInData) => async (dispatch) => {
     try {
         const user = await axios.post('/login', signInData)
         // console.log("success")
+        console.log(user, '<<<< user');
         return user
     } catch (error) {
         // console.log("failed")
@@ -183,5 +184,16 @@ export const getUpcomingAppointment = () => async (dispatch) => {
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const month = monthNames[new Date(date).getMonth()]
   const payload = `${theDay}, ${new Date(date).getDate()} ${month} ${new Date(date).getFullYear()}`
-  dispatch({type: 'upcoming/set', payload})
+  const tester = new Date (payload)
+  if (tester === "Invalid Date") {
+    payload = '-'
+    console.log("tester equals to invalid date");
+  }
+  console.log(tester, '<<< tester');
+  console.log(payload, '<<< payload after check');
+  if (payload === ", NaN undefined NaN") {
+    console.log("payload NaN and undefined");
+  } else {
+    dispatch({type: 'upcoming/set', payload})
+  }
 }

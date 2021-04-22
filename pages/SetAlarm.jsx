@@ -56,6 +56,7 @@ export default function SetAlarm({route, navigation}) {
       let hours;
       minute < 10 ? minutes = '0' + minute : minutes = minute
       hour < 10 ? hours = '0' + hour : hours = hour
+      console.log(hours, "<<<< hours")
       setTime(`${hours}:${minutes}`)
       tempAlarm[indexToEdit] = `${hours}:${minutes}`
       // alarm[indexToEdit] = `${hours}:${minutes}`
