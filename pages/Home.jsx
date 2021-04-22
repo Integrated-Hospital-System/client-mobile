@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { asyncFetchMeds, asyncFetchDoctors, getUpcomingAppointment } from '../store/actions'
+import { asyncFetchMeds, asyncFetchDoctors, getUpcomingAppointment, getHistory } from '../store/actions'
 import { TouchableOpacity, Text, Image, View, StyleSheet, ImageBackground, TouchableHighlight, ScrollView } from 'react-native';
 import { Button, TextInput, Avatar } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
@@ -18,6 +18,7 @@ export default function Homepage({navigation}) {
     dispatch(asyncFetchMeds())
     dispatch(asyncFetchDoctors())
     dispatch(getUpcomingAppointment())
+    dispatch(getHistory())
     console.log(medicines, '<<< medicines');
     // console.log(doctors, '<<< doctors');
   }, [])

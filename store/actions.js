@@ -197,3 +197,44 @@ export const getUpcomingAppointment = () => async (dispatch) => {
     dispatch({type: 'upcoming/set', payload})
   }
 }
+
+export const getHistory = () => async (dispatch) => {
+  const cache = await AsyncStorage.getItem('user-data')
+  const {access_token} = JSON.parse(cache)
+  console.log(access_token, '<<< access');
+  const {data} = await axios.get('/orders', {
+    headers: {
+      access_token
+    }
+  })
+
+  let date = ''
+  const filtered = data.filter(appointment => appointment._id)
+  console.log(filtered, '<<<<<< filtered');
+  console.log(data.length, '<<<<< data history length')
+  console.log(filtered.length, '<<<<<< filtered length');
+  
+  let temp = []
+
+  filtered.forEach(order => {
+    let doctorName = ''
+    let diseases = []
+    let medicineGiven = []
+    let date = order.appointment.appointmentDate
+    doctorName = order.appointment.doctor.name
+    order.diseases.forEach(disease => {
+      diseases.push(disease)
+    })
+    order.medicines.forEach(med => {
+      medicineGiven.push(med.medicine.name)
+    })
+    temp.push({
+      name : doctorName,
+      diseases,
+      medicines: medicineGiven,
+      date
+    })
+  })
+  console.log(temp, '<<<<<')
+  dispatch({type: 'history/fetch', payload:temp})
+}
