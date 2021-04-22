@@ -175,18 +175,11 @@ export default function DocCard(props) {
       const hours = new Date().getHours()
       const minutes = new Date().getMinutes()
       const seconds = new Date().getSeconds()
-      // console.log(hours, typeof hours, '<<<<<<< hours');
-      // console.log(alarmHour, typeof alarmHour, '<<<<<<< alarmHour');
-      // console.log(minutes, typeof minutes, '<<<<<<< minutes');
-      // console.log(alarm, typeof alarm, '<<<<<<< alarm');
-      // console.log(seconds, typeof seconds, '<<<<<<< seconds');
       alarm.forEach(time => {
-        console.log(time.split(':'), '<<<< time');
-        // const alarmHour = +(time[0]+time[1])
-        // const alarmMinutes = +(time[3]+time[4])
+        // console.log(time.split(':'), '<<<< time');
         const alarmHour = +(time.split(':')[0])
         const alarmMinutes = +(time.split(':')[1])
-        if (hours === alarmHour && minutes === alarmMinutes && seconds === 0) {
+        if (hours >= alarmHour && minutes >= alarmMinutes) {
           console.log('<<<<<<<<<<<<<<<<<<<<<<<<< BERPINDAAAH!!!!!');
           navigation.navigate('Confirmation', {name, doses, totalMed})
         }
