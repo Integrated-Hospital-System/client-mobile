@@ -12,17 +12,35 @@ export const signUp = (signupdata) => async (dispatch) => {
     }
 }
 
-export const signIn = (signInData) => async (dispatch) => {
+export const setInitialState = (payload) => (dispatch) => {
+  dispatch({type: 'patient/signin', payload})
+}
+
+export const asyncSignIn = (signInData) => async (dispatch) => {
     console.log('enter action signIn')
     try {
         const {data} = await axios.post('/login', signInData)
-        // console.log("success")
-        await AsyncStorage.setItem('user-data', JSON.stringify(data, null, 2))
-        return data
+        console.log("success")
+        // console.log(data, '<<<< logged in account');
+        await AsyncStorage.setItem('user-data', JSON.stringify(data))
+        // const cache = await AsyncStorage.getItem('user-data')
+        // console.log(cache, '<<<<<<< cache without parse');
+        // console.log(JSON.parse(cache), '<<<<<<< cache')
+        dispatch({type: 'patient/signin', payload: data})
     } catch (error) {
         // console.log("failed")
         console.log(error)
     }
+}
+
+export const asyncSignOut = () => async (dispatch) => {
+  console.log('enter action signOut')
+  try {
+    await AsyncStorage.removeItem('user-data')
+    dispatch({type: 'patient/signout', payload: {}})
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export const asyncFetchDoctors = () => async (dispatch) => {

@@ -5,12 +5,11 @@ import * as Notifications from 'expo-notifications';
 import { asyncFetchMeds, asyncFetchDoctors, getUpcomingAppointment, getHistory } from '../store/actions'
 import { TouchableOpacity, Text, Image, View, StyleSheet, ImageBackground, TouchableHighlight, ScrollView } from 'react-native';
 import { Button, TextInput, Avatar } from 'react-native-paper';
-import { Ionicons } from "@expo/vector-icons"
-import { BoxShadow } from "react-native-shadow";
+import {setInitialState} from '../store/actions'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Homepage({navigation}) {
-  const [cache, setCache] = useState('')
+  const cache = useSelector(state => state.patientReducer.loggedAccount)
   const dispatch = useDispatch()
   const upcomingApp = useSelector(state => state.doctorReducer.upcomingAppointment)
   const medicines = useSelector(state => state.medicineReducer.medicines)
@@ -25,6 +24,13 @@ export default function Homepage({navigation}) {
   }, [])
   const userData = null
 
+  // useEffect(async () => {
+  //   const storage = await AsyncStorage.getItem('user-data')
+  //   if (storage) {
+  //     dispatch (setInitialState(JSON.stringify(storage)))
+  //   }
+  // }, [])
+
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response, '<<<<<<<< response from clickable local notif');
@@ -36,22 +42,27 @@ export default function Homepage({navigation}) {
   }, []);
 
   const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('user-data')
-      if(value !== null) {
-        setCache(JSON.parse(value))
-        console.log(cache, '<<<<< cache di home');
-      }
-    } catch(e) {
-      console.log(e);
-      navigation.navigate('SignIn')
-    }
+    // console.log(cache, '<<<<<<<< cache di home page line 41');
+    // try {
+    //   const value = await AsyncStorage.getItem('user-data')
+    //   if(value !== null) {
+    //     setCache(JSON.parse(value))
+    //     console.log(cache, '<<<<< cache di home');
+    //   }
+    // } catch(e) {
+    //   console.log(e);
+    //   navigation.navigate('SignIn')
+    // }
   }
   useEffect(() => {
     getData()
   }, [])
 
-  if (!cache) return (<Text>Loading...</Text>)
+  if (!cache) {
+    navigation.navigate('SignIn')
+  }
+
+
 
   return (
     <ScrollView
@@ -61,8 +72,10 @@ export default function Homepage({navigation}) {
 
         <View style={styles.topContainer}>
           <Text style={styles.welcomeText}>Welcome Back!</Text>
-          <Text style={styles.nameText}>{cache.account.name}</Text>
-          <Text style={styles.emailText}>{cache.account.email}</Text>
+          <Text style={styles.nameText}>Acong</Text>
+          {/* <Text style={styles.nameText}>{cache.account.name}</Text> */}
+          {/* <Text style={styles.emailText}>{cache.account.email}</Text> */}
+          <Text style={styles.emailText}>Acong@mail.com</Text>
         </View>
         <Text style={{
           textAlign: 'center',

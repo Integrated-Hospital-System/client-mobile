@@ -5,11 +5,12 @@ import { Button, TextInput } from 'react-native-paper';
 import { Ionicons } from "@expo/vector-icons"
 import AwesomeAlert from 'react-native-awesome-alerts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signIn } from '../store/actions'
-import { useDispatch } from 'react-redux';
+import { asyncSignIn } from '../store/actions'
+import { useDispatch, useSelector } from 'react-redux';
 const axios = require('axios')
 
 export default function SignIn(props) {
+    const cache = useSelector(state => state.patientReducer.loggedAccount)
     const dispatch = useDispatch()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -19,8 +20,9 @@ export default function SignIn(props) {
 
 
     useEffect(async () => {
+        // await AsyncStorage.removeItem('user-data')
         const checkCache = async () => {
-            const cachenow = await AsyncStorage.getItem('user-data', '')
+            const cachenow = await AsyncStorage.getItem('user-data')
             console.log(cachenow, '<<<<< cache at sign in page');
             console.log('masuk sign in pertama kali')
             if (cachenow) {
@@ -32,11 +34,20 @@ export default function SignIn(props) {
 
     const onSubmitLogin = async () => {
         // check email dan passwordnya kalo bener masukin di cache
-        console.log('masuk sini<<<<');
-        await dispatch(signIn({email, password}))
-        props.navigation.navigate('Home');
+        console.log('masuk submit sign in<<<<');  
+        const userCache = await AsyncStorage.getItem('user-data')      
+        console.log(userCache, '<<<< before sign in');
+        dispatch(asyncSignIn({email, password}))
+        const userCacheAfter = await AsyncStorage.getItem('user-data')      
+        console.log(userCacheAfter, '<<<< after sign in');
+        if (cache.access_token !== "") {
+            console.log(cache.access_token, '<<<<< access token dari sign in');
+            props.navigation.navigate('Home');
+        }
+        // const response = await dispatch(signIn({email, password}))
         // console.log(response, '<<< response');
-        // const userData = response.data
+        // console.log(response.account, '<<< response account');
+        // const userData = response
         // if (userData.account.email === email) {
         //     try {
         //         await AsyncStorage.setItem('user-data', JSON.stringify(userData, null, 2))
