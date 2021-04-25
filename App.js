@@ -37,7 +37,7 @@ export default function App() {
     <PaperProvider>
       <Provider store={store}>
         <NavigationContainer>
-          <Drawer.Navigator initialRouteName="SignIn" drawerContent={(props) => <DrawerContent {...props} />}>
+          <Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <DrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="MaMed" component={MaMed} />
             <Drawer.Screen name="Doctors" component={Doctors} />

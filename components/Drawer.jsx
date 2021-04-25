@@ -10,11 +10,12 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon2 from 'react-native-vector-icons/AntDesign'
 import Icon3 from 'react-native-vector-icons/Fontisto'
-import Mamed from '../pages/MedicineBox'
-import Doctors from '../pages/Doctors'
+import {useDispatch} from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { asyncSignOut } from '../store/actions'
 
 export function DrawerContent(props) {
+    const dispatch = useDispatch()
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
@@ -84,10 +85,13 @@ export function DrawerContent(props) {
                         />
                     )}
                     label="Sign Out"
-                    onPress={async () => {
-                        const cachefromsignout = await AsyncStorage.getItem('user-data')
-                        await AsyncStorage.removeItem('user-data')
-                        props.navigation.navigate('SignIn')
+                    onPress={ async () => {
+                        console.log("sign out");
+                        // const cachefromsignout = await AsyncStorage.getItem('user-data')
+                        // console.log(cachefromsignout, '<<<<< cache from sign out before deletion');
+                        // dispatch(asyncSignOut())
+                        // console.log(cachefromsignout, '<<<<< cache from sign out after deletion');
+                        // props.navigation.navigate('SignIn')
                     }}
                 />
             </Drawer.Section>
