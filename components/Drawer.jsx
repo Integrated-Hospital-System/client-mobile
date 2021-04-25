@@ -86,6 +86,7 @@ export function DrawerContent(props) {
                     )}
                     label="Sign Out"
                     onPress={ async () => {
+                        console.log("sign out");
                         // const cachefromsignout = await AsyncStorage.getItem('user-data')
                         // console.log(cachefromsignout, '<<<<< cache from sign out before deletion');
                         // dispatch(asyncSignOut())
